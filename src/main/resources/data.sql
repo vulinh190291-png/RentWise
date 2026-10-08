@@ -1,0 +1,2 @@
+-- Demo seed data is inserted idempotently by TrainingDemoDataInitializer.
+-- Keeping this file reserves the conventional Spring Boot seed location without coupling MySQL/H2 SQL dialects.

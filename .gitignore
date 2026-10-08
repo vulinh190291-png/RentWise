@@ -1,0 +1,19 @@
+# Build
+/target/
+*.log
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# Local environment
+.env
+application-local.yml
+
+# Local execution/worktrees
+.worktrees/
+.superpowers/
