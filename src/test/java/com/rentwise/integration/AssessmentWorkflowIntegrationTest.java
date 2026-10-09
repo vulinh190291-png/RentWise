@@ -25,8 +25,8 @@ class AssessmentWorkflowIntegrationTest {
     void mixedTopicAssessmentPersistsAnswersUpdatesMasteryAndReturnsNextStageRecommendation() {
         Long userId = 601L;
         var diagnosis = trainingFacade.startDiagnosis(userId);
-        diagnosis.cases().forEach(c -> trainingFacade.submitDiagnosisAnswer(diagnosis.sessionId(), c.caseId(), false));
-        var before = diagnosisWorkflowService.finish(diagnosis.sessionId()).profile();
+        diagnosis.cases().forEach(c -> trainingFacade.submitDiagnosisAnswer(userId, diagnosis.sessionId(), c.caseId(), false));
+        var before = diagnosisWorkflowService.finish(userId, diagnosis.sessionId()).profile();
 
         var assessment = assessmentWorkflowService.start(userId);
         assertThat(assessment.cases()).extracting(c -> c.topic()).doesNotHaveDuplicates();
@@ -35,7 +35,7 @@ class AssessmentWorkflowIntegrationTest {
         var request = new AssessmentFinishRequest(assessment.cases().stream()
                 .map(c -> new AssessmentAnswerInput(c.caseId(), true))
                 .toList());
-        var result = assessmentWorkflowService.finish(assessment.sessionId(), request);
+        var result = assessmentWorkflowService.finish(userId, assessment.sessionId(), request);
 
         assertThat(result.profile().topics()).hasSize(5);
         assertThat(result.profile().topics()).isNotEqualTo(before.topics());

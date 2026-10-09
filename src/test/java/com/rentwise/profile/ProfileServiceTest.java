@@ -55,8 +55,8 @@ class ProfileServiceTest {
     void initializesFiveTopicsFromDiagnosisAndIsIdempotent() {
         Long userId = 103L;
         var diagnosis = trainingFacade.startDiagnosis(userId);
-        diagnosis.cases().forEach(c -> trainingFacade.submitDiagnosisAnswer(diagnosis.sessionId(), c.caseId(), true));
-        trainingFacade.finishDiagnosis(diagnosis.sessionId());
+        diagnosis.cases().forEach(c -> trainingFacade.submitDiagnosisAnswer(userId, diagnosis.sessionId(), c.caseId(), true));
+        trainingFacade.finishDiagnosis(userId, diagnosis.sessionId());
 
         profileFacade.initializeFromDiagnosis(userId);
         profileFacade.initializeFromDiagnosis(userId);

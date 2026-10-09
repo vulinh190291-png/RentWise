@@ -30,10 +30,10 @@ class DiagnosisWorkflowIntegrationTest {
         started.cases().forEach(c -> {
             boolean correctChoice = c.difficulty() == Difficulty.EASY;
             boolean selected = c.topic() == RiskTopic.REPAIR_RESPONSIBILITY ? !correctChoice : correctChoice;
-            trainingFacade.submitDiagnosisAnswer(started.sessionId(), c.caseId(), selected);
+            trainingFacade.submitDiagnosisAnswer(userId, started.sessionId(), c.caseId(), selected);
         });
 
-        var completed = diagnosisWorkflowService.finish(started.sessionId());
+        var completed = diagnosisWorkflowService.finish(userId, started.sessionId());
 
         assertThat(completed.profile().topics()).hasSize(5);
         assertThat(completed.nextTraining().topic()).isEqualTo(RiskTopic.REPAIR_RESPONSIBILITY);
@@ -43,10 +43,10 @@ class DiagnosisWorkflowIntegrationTest {
     void finishingSameDiagnosisTwiceDoesNotDuplicateMasteryOrPlan() {
         Long userId = 502L;
         var started = trainingFacade.startDiagnosis(userId);
-        started.cases().forEach(c -> trainingFacade.submitDiagnosisAnswer(started.sessionId(), c.caseId(), c.difficulty() == Difficulty.EASY));
+        started.cases().forEach(c -> trainingFacade.submitDiagnosisAnswer(userId, started.sessionId(), c.caseId(), c.difficulty() == Difficulty.EASY));
 
-        diagnosisWorkflowService.finish(started.sessionId());
-        diagnosisWorkflowService.finish(started.sessionId());
+        diagnosisWorkflowService.finish(userId, started.sessionId());
+        diagnosisWorkflowService.finish(userId, started.sessionId());
 
         assertThat(masteryRepository.countByUserId(userId)).isEqualTo(5);
         assertThat(planRepository.countByUserId(userId)).isEqualTo(1);

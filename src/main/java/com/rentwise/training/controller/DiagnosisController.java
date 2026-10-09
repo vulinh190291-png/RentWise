@@ -1,10 +1,12 @@
 package com.rentwise.training.controller;
 
 import com.rentwise.common.response.ApiResponse;
+import com.rentwise.security.CurrentUser;
 import com.rentwise.training.dto.*;
 import com.rentwise.training.service.DiagnosisWorkflowService;
 import com.rentwise.training.service.TrainingFacade;
 import jakarta.validation.Valid;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,17 +21,26 @@ public class DiagnosisController {
     }
 
     @PostMapping("/start")
-    public ApiResponse<DiagnosisStartResponse> start(@RequestParam Long userId) {
-        return ApiResponse.ok(trainingFacade.startDiagnosis(userId));
+    public ApiResponse<DiagnosisStartResponse> start(@AuthenticationPrincipal CurrentUser currentUser) {
+        return ApiResponse.ok(trainingFacade.startDiagnosis(currentUser.id()));
     }
 
     @PostMapping("/{sessionId}/answers")
-    public ApiResponse<AnswerResult> answer(@PathVariable Long sessionId, @Valid @RequestBody SubmitAnswerRequest request) {
-        return ApiResponse.ok(trainingFacade.submitDiagnosisAnswer(sessionId, request.caseId(), request.selectedClarify()));
+    public ApiResponse<AnswerResult> answer(
+            @AuthenticationPrincipal CurrentUser currentUser,
+            @PathVariable Long sessionId,
+            @Valid @RequestBody SubmitAnswerRequest request) {
+        return ApiResponse.ok(trainingFacade.submitDiagnosisAnswer(
+                currentUser.id(),
+                sessionId,
+                request.caseId(),
+                request.selectedClarify()));
     }
 
     @PostMapping("/{sessionId}/finish")
-    public ApiResponse<DiagnosisCompleteResponse> finish(@PathVariable Long sessionId) {
-        return ApiResponse.ok(workflowService.finish(sessionId));
+    public ApiResponse<DiagnosisCompleteResponse> finish(
+            @AuthenticationPrincipal CurrentUser currentUser,
+            @PathVariable Long sessionId) {
+        return ApiResponse.ok(workflowService.finish(currentUser.id(), sessionId));
     }
 }

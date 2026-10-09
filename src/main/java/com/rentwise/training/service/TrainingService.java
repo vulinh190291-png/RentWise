@@ -38,8 +38,8 @@ public class TrainingService implements TrainingFacade {
     }
 
     @Override
-    public AnswerResult submitDiagnosisAnswer(Long sessionId, Long caseId, boolean selectedClarify) {
-        DiagnosisSession session = findOpenSession(sessionId, SessionType.DIAGNOSIS);
+    public AnswerResult submitDiagnosisAnswer(Long userId, Long sessionId, Long caseId, boolean selectedClarify) {
+        DiagnosisSession session = findOpenSession(userId, sessionId, SessionType.DIAGNOSIS, "Diagnosis session not found");
         TrainingCase trainingCase = findCase(caseId);
         if (!trainingCase.isDiagnosisEligible()) {
             throw new DomainException(HttpStatus.BAD_REQUEST, "Case is not part of diagnosis");
@@ -51,9 +51,8 @@ public class TrainingService implements TrainingFacade {
     }
 
     @Override
-    public DiagnosisFinishResult finishDiagnosis(Long sessionId) {
-        DiagnosisSession session = sessionRepository.findById(sessionId)
-                .orElseThrow(() -> new DomainException(HttpStatus.NOT_FOUND, "Diagnosis session not found"));
+    public DiagnosisFinishResult finishDiagnosis(Long userId, Long sessionId) {
+        DiagnosisSession session = findOwnedSession(userId, sessionId, "Diagnosis session not found");
         if (session.getSessionType() != SessionType.DIAGNOSIS) {
             throw new DomainException(HttpStatus.BAD_REQUEST, "Not a diagnosis session");
         }
@@ -135,8 +134,8 @@ public class TrainingService implements TrainingFacade {
     }
 
     @Override
-    public AnswerResult submitAssessmentAnswer(Long sessionId, Long caseId, boolean selectedClarify) {
-        DiagnosisSession session = findOpenSession(sessionId, SessionType.ASSESSMENT);
+    public AnswerResult submitAssessmentAnswer(Long userId, Long sessionId, Long caseId, boolean selectedClarify) {
+        DiagnosisSession session = findOpenSession(userId, sessionId, SessionType.ASSESSMENT, "Assessment session not found");
         if (answerRepository.existsBySessionIdAndCaseId(sessionId, caseId)) {
             throw new DomainException(HttpStatus.CONFLICT, "Case already answered in this assessment");
         }
@@ -144,9 +143,8 @@ public class TrainingService implements TrainingFacade {
     }
 
     @Override
-    public DiagnosisFinishResult finishAssessment(Long sessionId) {
-        DiagnosisSession session = sessionRepository.findById(sessionId)
-                .orElseThrow(() -> new DomainException(HttpStatus.NOT_FOUND, "Assessment session not found"));
+    public DiagnosisFinishResult finishAssessment(Long userId, Long sessionId) {
+        DiagnosisSession session = findOwnedSession(userId, sessionId, "Assessment session not found");
         if (session.getSessionType() != SessionType.ASSESSMENT) {
             throw new DomainException(HttpStatus.BAD_REQUEST, "Not an assessment session");
         }
@@ -162,13 +160,17 @@ public class TrainingService implements TrainingFacade {
         return new DiagnosisFinishResult(session.getId(), session.getUserId(), alreadyFinished);
     }
 
-    private DiagnosisSession findOpenSession(Long sessionId, SessionType type) {
-        DiagnosisSession session = sessionRepository.findById(sessionId)
-                .orElseThrow(() -> new DomainException(HttpStatus.NOT_FOUND, "Session not found"));
+    private DiagnosisSession findOpenSession(Long userId, Long sessionId, SessionType type, String notFoundMessage) {
+        DiagnosisSession session = findOwnedSession(userId, sessionId, notFoundMessage);
         if (session.getSessionType() != type || session.getStatus() != SessionStatus.STARTED) {
             throw new DomainException(HttpStatus.BAD_REQUEST, "Session is not open");
         }
         return session;
+    }
+
+    private DiagnosisSession findOwnedSession(Long userId, Long sessionId, String notFoundMessage) {
+        return sessionRepository.findByIdAndUserId(sessionId, userId)
+                .orElseThrow(() -> new DomainException(HttpStatus.NOT_FOUND, notFoundMessage));
     }
 
     private TrainingCase findCase(Long caseId) {
