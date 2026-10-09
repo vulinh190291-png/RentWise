@@ -105,6 +105,13 @@ class SecurityIntegrationTest {
     }
 
     @Test
+    void unlistedRoutesRequireAuthenticationByDefault() throws Exception {
+        mockMvc.perform(get("/test/authenticated-only"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value("Authentication required"));
+    }
+
+    @Test
     void methodSecurityReturns403ForLearnerAndAllowsAdmin() throws Exception {
         UserAccount learner = userRepository.save(new UserAccount(
                 "learner", passwordEncoder.encode("12345678"), UserRole.LEARNER, true));
@@ -135,6 +142,11 @@ class SecurityIntegrationTest {
 
     @RestController
     static class AdminTestController {
+        @GetMapping("/test/authenticated-only")
+        String authenticatedOnly() {
+            return "authenticated-ok";
+        }
+
         @GetMapping("/test/admin")
         @PreAuthorize("hasRole('ADMIN')")
         String adminOnly() {

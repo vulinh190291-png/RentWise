@@ -103,7 +103,10 @@ mysql -u root -p < sql/init.sql
 rentwise
 ```
 
-> 如果你从 v0.1 的本地数据库直接升级，旧 `users` 表只有 `id + username`，并可能包含无密码的 `demo_user`。v0.2 的用户表结构不兼容这个无密码 Demo 用户。开发环境中若没有需要保留的数据，建议先备份后重新初始化 `rentwise` 数据库，再启动 v0.2。不要在生产或有重要数据的环境中直接删除数据库。
+如果是**尚未被 v0.2 / `ddl-auto` 部分修改过的 v0.1 开发库**，先备份后可执行一次迁移脚本：
+
+```bash
+mysql -u root -p < sql/migration-v0.1-to-v0.2.sql
 
 ### 3. 配置数据库
 

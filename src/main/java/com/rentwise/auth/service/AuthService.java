@@ -9,6 +9,7 @@ import com.rentwise.security.JwtService;
 import com.rentwise.user.domain.UserAccount;
 import com.rentwise.user.domain.UserRole;
 import com.rentwise.user.repository.UserRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -46,8 +47,13 @@ public class AuthService {
                 passwordEncoder.encode(request.password()),
                 UserRole.LEARNER,
                 true);
-        var saved = userRepository.save(user);
-        return new RegisterResponse(saved.getId(), saved.getUsername(), saved.getRole());
+        try {
+            var saved = userRepository.saveAndFlush(user);
+            return new RegisterResponse(saved.getId(), saved.getUsername(), saved.getRole());
+        } catch (DataIntegrityViolationException ex) {
+            // Database uniqueness remains the final authority under concurrent registration.
+            throw new DomainException(HttpStatus.CONFLICT, "Username already exists");
+        }
     }
 
     @Transactional(readOnly = true)
