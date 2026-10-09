@@ -7,8 +7,8 @@ import java.util.Optional;
 
 public interface TrainingFacade {
     DiagnosisStartResponse startDiagnosis(Long userId);
-    AnswerResult submitDiagnosisAnswer(Long sessionId, Long caseId, boolean selectedClarify);
-    DiagnosisFinishResult finishDiagnosis(Long sessionId);
+    AnswerResult submitDiagnosisAnswer(Long userId, Long sessionId, Long caseId, boolean selectedClarify);
+    DiagnosisFinishResult finishDiagnosis(Long userId, Long sessionId);
     List<AnswerFactDto> recentAnswers(Long userId, RiskTopic topic, int limit);
     List<AnswerFactDto> recentAnswersForUser(Long userId, int limit);
     Optional<AnswerFactDto> latestAnswer(Long userId);
@@ -17,6 +17,6 @@ public interface TrainingFacade {
     FeedbackView feedback(Long caseId, boolean correct);
     AnswerResult recordAnswer(Long userId, Long sessionId, Long caseId, boolean selectedClarify, AnswerSource source);
     DiagnosisStartResponse startAssessment(Long userId);
-    AnswerResult submitAssessmentAnswer(Long sessionId, Long caseId, boolean selectedClarify);
-    DiagnosisFinishResult finishAssessment(Long sessionId);
+    AnswerResult submitAssessmentAnswer(Long userId, Long sessionId, Long caseId, boolean selectedClarify);
+    DiagnosisFinishResult finishAssessment(Long userId, Long sessionId);
 }

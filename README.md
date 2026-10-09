@@ -1,14 +1,18 @@
 # RentWise
 
-RentWise 是一个面向第一次独立租房用户的**租房签约条款识别训练系统**。当前仓库为课程项目的 **v0.1 模块化单体 Demo**，目标是先验证业务闭环，再逐步演进为微服务。
+RentWise 是一个面向第一次独立租房用户的**租房签约条款识别训练系统**。当前仓库进入 **v0.2：JWT Authentication & RBAC**，仍保持模块化单体架构，在 v0.1 自适应训练闭环外增加真实用户身份与权限边界。
 
 > RentWise 不替用户审合同，也不判断条款合法/违法。它训练用户识别“哪些内容值得继续确认”。
 
-## v0.1 能做什么
-
-核心闭环：
+## v0.2 核心闭环
 
 ```text
+注册
+  ↓
+登录
+  ↓
+JWT Access Token
+  ↓
 初始诊断
   ↓
 五类 Mastery 能力画像
@@ -22,42 +26,57 @@ Mastery 更新
 阶段测评
 ```
 
-五个训练主题：
+### 身份与权限
 
-- 押金返还
-- 提前退租
-- 维修责任
-- 费用承担
-- 违约责任
+- 用户名 + 密码注册
+- BCrypt 密码哈希，不保存明文密码
+- 登录后签发 60 分钟 JWT Access Token
+- Spring Security 无状态认证（STATELESS）
+- `LEARNER / CONTENT_EDITOR / ADMIN` 三种固定角色
+- 公开注册只能创建 `LEARNER`
+- learner-facing API 不再接受客户端自行指定 `userId`
+- diagnosis / assessment 的 `sessionId` 会校验归属，防止跨用户访问
 
-当前 Demo 预置 10 道诊断案例（5 个主题 × 2 道）。Mastery 使用最近最多 8 道同主题答题记录的难度加权正确率计算：EASY=1、MEDIUM=2、HARD=3。同主题连续错 2 题后，系统展示识别卡，并将下一题难度降低一级。
+当前 v0.2 不做 Refresh Token、Token 黑名单、验证码、找回密码、OAuth2/OIDC、第三方登录、动态权限表或前端登录页面。
 
-## 为什么先做模块化单体
+## 为什么仍然先做模块化单体
 
-代码虽然只部署为一个 Spring Boot 应用，但内部已经按未来四个微服务边界组织：
+代码只部署为一个 Spring Boot 应用，但内部按未来服务边界组织：
 
 ```text
 user      -> 用户身份
 training  -> 题目与答题事实
 profile   -> Mastery 与能力画像
 plan      -> 下一步训练决策
+auth      -> 注册 / 登录
+security  -> JWT / Spring Security / RBAC
 ```
 
-核心原则：**Training = 事实，Profile = 状态，Plan = 决策。**
+核心原则：
 
-模块之间不直接访问对方 Repository，也不跨模块传 JPA Entity。后续课程迭代会把四个模块拆为独立服务，再接入 Nacos、Sentinel、Gateway、Seata、SkyWalking 等治理组件。
+```text
+User = identity
+Training = facts
+Profile = state
+Plan = decision
+```
+
+v0.2 先把认证授权边界做正确，不提前拆微服务。
 
 ## 技术栈
 
 - Java 17
-- Spring Boot 3.4.x
+- Spring Boot 3.4.5
+- Spring Security 6
 - Spring Web
 - Spring Data JPA
 - Bean Validation
 - MySQL 8
+- JJWT 0.13.0
+- BCrypt
 - springdoc-openapi / Swagger UI
 - Maven
-- JUnit 5
+- JUnit 5 / MockMvc / AssertJ
 - H2（仅测试环境）
 
 ## 本地运行
@@ -72,6 +91,8 @@ plan      -> 下一步训练决策
 
 ### 2. 初始化数据库
 
+全新环境：
+
 ```bash
 mysql -u root -p < sql/init.sql
 ```
@@ -81,6 +102,8 @@ mysql -u root -p < sql/init.sql
 ```text
 rentwise
 ```
+
+> 如果你从 v0.1 的本地数据库直接升级，旧 `users` 表只有 `id + username`，并可能包含无密码的 `demo_user`。v0.2 的用户表结构不兼容这个无密码 Demo 用户。开发环境中若没有需要保留的数据，建议先备份后重新初始化 `rentwise` 数据库，再启动 v0.2。不要在生产或有重要数据的环境中直接删除数据库。
 
 ### 3. 配置数据库
 
@@ -92,27 +115,38 @@ DB_USERNAME=root
 DB_PASSWORD=root
 ```
 
-也可以通过环境变量覆盖：
-
-```bash
-export DB_USERNAME=root
-export DB_PASSWORD=your_password
-```
-
-Windows PowerShell：
+Windows PowerShell 示例：
 
 ```powershell
 $env:DB_USERNAME="root"
 $env:DB_PASSWORD="your_password"
 ```
 
-### 4. 启动
+### 4. 配置 JWT Secret
 
-```bash
+`JWT_SECRET` 不写入仓库，运行前必须在环境变量中提供至少 32 字节的本地密钥。
+
+PowerShell 示例：
+
+```powershell
+$env:JWT_SECRET="rentwise-local-secret-change-me-1234567890"
+```
+
+Access Token 默认有效期为 3600 秒，也可以通过：
+
+```powershell
+$env:JWT_EXPIRATION_SECONDS="3600"
+```
+
+覆盖。
+
+### 5. 启动
+
+```powershell
 mvn spring-boot:run
 ```
 
-服务默认运行在：
+默认地址：
 
 ```text
 http://localhost:8080
@@ -124,19 +158,59 @@ Swagger UI：
 http://localhost:8080/swagger-ui.html
 ```
 
-## Demo 演示顺序
+## v0.2 演示顺序
 
-建议使用 `userId=1`。
-
-### 1. 开始诊断
+### 1. 注册
 
 ```http
-POST /api/diagnosis/start?userId=1
+POST /api/auth/register
+Content-Type: application/json
+
+{
+  "username": "atopos",
+  "password": "12345678"
+}
 ```
 
-返回 10 道模拟合同题和 `sessionId`。
+### 2. 登录
 
-### 2. 提交 10 道诊断答案
+```http
+POST /api/auth/login
+Content-Type: application/json
+
+{
+  "username": "atopos",
+  "password": "12345678"
+}
+```
+
+从响应中取得 `accessToken`。
+
+### 3. 在 Swagger 中授权
+
+点击 **Authorize**，输入：
+
+```text
+Bearer <accessToken>
+```
+
+之后调用受保护接口。
+
+### 4. 验证当前用户
+
+```http
+GET /api/users/me
+```
+
+### 5. 开始诊断
+
+```http
+POST /api/diagnosis/start
+```
+
+不再传 `userId`。
+
+### 6. 提交 10 道诊断答案
 
 ```http
 POST /api/diagnosis/{sessionId}/answers
@@ -148,53 +222,41 @@ Content-Type: application/json
 }
 ```
 
-### 3. 完成诊断
+### 7. 完成诊断
 
 ```http
 POST /api/diagnosis/{sessionId}/finish
 ```
 
-返回：
-
-- 五类 Mastery
-- 当前薄弱主题
-- 首轮训练计划
-- 下一道推荐题
-
-### 4. 查看能力画像
+### 8. 查看能力画像
 
 ```http
-GET /api/profile/1
+GET /api/profile/me
 ```
 
-### 5. 获取下一道训练题
+### 9. 获取并提交训练题
 
 ```http
-GET /api/training/next?userId=1
+GET /api/training/next
 ```
-
-### 6. 提交训练答案
 
 ```http
 POST /api/training/answers
 Content-Type: application/json
 
 {
-  "userId": 1,
   "caseId": 5,
   "selectedClarify": true
 }
 ```
 
-返回判断结果、解释、建议追问、更新后的 Mastery 和下一题。
-
-### 7. 开始阶段测评
+### 10. 阶段测评
 
 ```http
-POST /api/assessment/start?userId=1
+POST /api/assessment/start
 ```
 
-### 8. 完成阶段测评
+然后：
 
 ```http
 POST /api/assessment/{sessionId}/finish
@@ -211,67 +273,43 @@ Content-Type: application/json
 }
 ```
 
+## 401 与 403
+
+```text
+401 Unauthorized
+```
+
+表示没有成功认证，例如 Token 缺失、过期、格式错误或签名无效。
+
+```text
+403 Forbidden
+```
+
+表示身份已经认证成功，但当前角色没有访问目标资源的权限。
+
 ## 测试
 
 ```bash
 mvn clean test
 ```
 
-测试覆盖重点：
+v0.2 重点验证：
 
-- 诊断题必须是 5 类 × 2 道
-- 最近 8 道同主题题的难度加权 Mastery
-- 少于 8 道时按已有记录计算
-- 未初始化画像时返回明确错误
-- 连错计数必须按连续时间序列和主题判断
-- 推荐优先选择最弱主题
-- 连错 2 题降低一档难度
-- 避免立即重复上一道题
-- 重复完成诊断不重复创建画像与计划
-- 阶段测评更新 Mastery
+- 公开注册只能创建 LEARNER
+- BCrypt 保存密码哈希
+- 用户名重复（含大小写变体）被拒绝
+- 正确登录返回 JWT
+- 错误 / 不存在 / disabled 账号登录失败
+- 缺失、损坏、篡改、过期 Token 被拒绝
+- 角色不足返回 403
+- learner API 不再信任客户端 userId
+- 不同用户不能操作对方的 diagnosis / assessment session
+- 原有诊断 → Mastery → 自适应训练 → 阶段测评闭环仍然通过
 
-## 产品设计图
+## 产品设计与实现文档
 
-### 用户故事地图
-
-![RentWise 用户故事地图](docs/assets/user-story-map.png)
-
-### MVP 低保真原型
-
-![RentWise MVP 低保真原型](docs/assets/wireframe-main.png)
-
-![RentWise MVP 流程细化](docs/assets/wireframe-flow.png)
-
-## 文档
-
-- [架构说明](docs/architecture.md)
-- [MVP 范围](docs/mvp.md)
-- [API 说明](docs/api.md)
-- [设计说明](docs/superpowers/specs/2026-10-08-rentwise-mvp-design.md)
-- [实现计划](docs/superpowers/plans/2026-10-08-rentwise-mvp-demo-implementation.md)
-
-## 后续课程演进
-
-v0.1 **尚未**接入以下组件：
-
-- Nacos
-- Sentinel
-- Gateway
-- Seata
-- SkyWalking
-- Redis
-- RocketMQ
-
-计划后续按课程进度逐步接入，而不是为了展示组件提前污染核心业务。
-
-每引入一个新工具，都回答三个问题：
-
-1. 它解决什么问题？
-2. RentWise 哪个真实场景需要它？
-3. 如果没有真实场景，怎样以最小成本满足课程要求而不污染业务？
-
-## 项目状态
-
-当前：`v0.1 modular-monolith demo`
-
-下一阶段：拆分 `user-service / training-service / profile-service / plan-service`，首先接入 Nacos 服务注册。
+- `docs/mvp.md`
+- `docs/architecture.md`
+- `docs/api.md`
+- `docs/superpowers/specs/2026-10-09-rentwise-v0.2-auth-security-design.md`
+- `docs/superpowers/plans/2026-10-09-rentwise-v0.2-auth-security-implementation.md`

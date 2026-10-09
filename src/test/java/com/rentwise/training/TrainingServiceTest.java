@@ -47,7 +47,7 @@ class TrainingServiceTest {
         var first = started.cases().get(0);
 
         AnswerResult result = trainingFacade.submitDiagnosisAnswer(
-                started.sessionId(), first.caseId(), true);
+                1L, started.sessionId(), first.caseId(), true);
 
         var facts = trainingFacade.recentAnswers(1L, first.topic(), 8);
         assertThat(facts).hasSize(1);
@@ -60,10 +60,10 @@ class TrainingServiceTest {
     @Test
     void finishingDiagnosisTwiceIsIdempotent() {
         DiagnosisStartResponse started = trainingFacade.startDiagnosis(1L);
-        started.cases().forEach(c -> trainingFacade.submitDiagnosisAnswer(started.sessionId(), c.caseId(), true));
+        started.cases().forEach(c -> trainingFacade.submitDiagnosisAnswer(1L, started.sessionId(), c.caseId(), true));
 
-        var firstFinish = trainingFacade.finishDiagnosis(started.sessionId());
-        var secondFinish = trainingFacade.finishDiagnosis(started.sessionId());
+        var firstFinish = trainingFacade.finishDiagnosis(1L, started.sessionId());
+        var secondFinish = trainingFacade.finishDiagnosis(1L, started.sessionId());
 
         assertThat(firstFinish.sessionId()).isEqualTo(secondFinish.sessionId());
         assertThat(diagnosisSessionRepository.count()).isEqualTo(1);

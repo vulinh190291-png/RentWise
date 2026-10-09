@@ -19,8 +19,8 @@ public class DiagnosisWorkflowService {
     }
 
     @Transactional
-    public DiagnosisCompleteResponse finish(Long sessionId) {
-        var finish = trainingFacade.finishDiagnosis(sessionId);
+    public DiagnosisCompleteResponse finish(Long userId, Long sessionId) {
+        var finish = trainingFacade.finishDiagnosis(userId, sessionId);
         var profile = profileFacade.initializeFromDiagnosis(finish.userId());
         var plan = planFacade.initializePlan(finish.userId());
         var next = planFacade.nextTraining(finish.userId());

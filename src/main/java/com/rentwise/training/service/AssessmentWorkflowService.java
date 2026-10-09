@@ -2,6 +2,7 @@ package com.rentwise.training.service;
 
 import com.rentwise.plan.service.PlanFacade;
 import com.rentwise.profile.service.ProfileFacade;
+import com.rentwise.training.domain.RiskTopic;
 import com.rentwise.training.dto.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,18 +22,22 @@ public class AssessmentWorkflowService {
     }
 
     public DiagnosisStartResponse start(Long userId) {
-        profileFacade.getProfile(userId); // fail clearly if diagnosis/profile has not been completed
+        profileFacade.getProfile(userId);
         return trainingFacade.startAssessment(userId);
     }
 
     @Transactional
-    public AssessmentResultResponse finish(Long sessionId, AssessmentFinishRequest request) {
-        var topics = new LinkedHashSet<com.rentwise.training.domain.RiskTopic>();
+    public AssessmentResultResponse finish(Long userId, Long sessionId, AssessmentFinishRequest request) {
+        var topics = new LinkedHashSet<RiskTopic>();
         request.answers().forEach(input -> {
-            var answer = trainingFacade.submitAssessmentAnswer(sessionId, input.caseId(), input.selectedClarify());
+            var answer = trainingFacade.submitAssessmentAnswer(
+                    userId,
+                    sessionId,
+                    input.caseId(),
+                    input.selectedClarify());
             topics.add(answer.topic());
         });
-        var finish = trainingFacade.finishAssessment(sessionId);
+        var finish = trainingFacade.finishAssessment(userId, sessionId);
         topics.forEach(topic -> profileFacade.recalculate(finish.userId(), topic));
         var profile = profileFacade.getProfile(finish.userId());
         planFacade.initializePlan(finish.userId());

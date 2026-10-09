@@ -3,7 +3,11 @@ USE rentwise;
 
 CREATE TABLE IF NOT EXISTS users (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    username VARCHAR(255) NOT NULL UNIQUE
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(100) NOT NULL,
+    role VARCHAR(32) NOT NULL,
+    enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP(6) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS training_case (
@@ -68,7 +72,6 @@ CREATE TABLE IF NOT EXISTS training_plan (
     updated_at TIMESTAMP(6) NOT NULL
 );
 
-INSERT IGNORE INTO users (id, username) VALUES (1, 'demo_user');
 
 INSERT IGNORE INTO training_case
 (id, topic, difficulty, clause_text, question, should_clarify, diagnosis_eligible, explanation, follow_up_question, active) VALUES
