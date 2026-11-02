@@ -1,22 +1,17 @@
-# RentWise v0.1 架构说明
+# RentWise Architecture
 
-## 1. 当前形态
+Current baseline: v0.2.0
 
-RentWise v0.1 是一个模块化单体。只部署一个 Spring Boot 进程，但内部保持未来微服务边界。
+RentWise 当前采用模块化单体架构（Modular Monolith）。系统只部署为一个 Spring Boot 应用，但内部按照未来服务边界进行模块划分。
 
-```text
-Client / Swagger
-      |
-      v
-Spring Boot Application
-      |
-+-----+----------+----------+------+
-| User | Training | Profile | Plan |
-+-----+----------+----------+------+
-      |
-      v
-    MySQL 8
-```
+## Core Module Boundaries
+
+- User = identity
+- Training = facts
+- Profile = state
+- Plan = decision
+- Auth = authentication workflow
+- Security = authentication / authorization infrastructure
 
 ## 2. 四个模块
 

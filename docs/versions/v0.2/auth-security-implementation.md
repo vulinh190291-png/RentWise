@@ -8,7 +8,7 @@
 
 **Tech Stack:** Java 17, Spring Boot 3.4.5, Spring Security 6, Spring Data JPA, MySQL 8, H2 tests, JJWT 0.13.0, JUnit 5, AssertJ, MockMvc.
 
-**Spec:** `docs/superpowers/specs/2026-10-09-rentwise-v0.2-auth-security-design.md`
+**Spec:** `docs/versions/v0.2/auth-security-design.md`
 
 ## Global Constraints
 
@@ -39,29 +39,29 @@
 
 ### New production files
 
-- `src/main/java/com/rentwise/user/domain/UserRole.java` — fixed role enum.
-- `src/main/java/com/rentwise/user/dto/CurrentUserResponse.java` — `/api/users/me` response.
-- `src/main/java/com/rentwise/user/controller/UserController.java` — current-user endpoint.
-- `src/main/java/com/rentwise/auth/dto/RegisterRequest.java` — registration input.
-- `src/main/java/com/rentwise/auth/dto/RegisterResponse.java` — registration output.
-- `src/main/java/com/rentwise/auth/dto/LoginRequest.java` — login input.
-- `src/main/java/com/rentwise/auth/dto/LoginResponse.java` — JWT login output.
-- `src/main/java/com/rentwise/auth/service/AuthService.java` — registration and login orchestration.
-- `src/main/java/com/rentwise/auth/controller/AuthController.java` — `/api/auth/**` endpoints.
-- `src/main/java/com/rentwise/security/CurrentUser.java` — trusted request principal.
-- `src/main/java/com/rentwise/security/JwtService.java` — token issue/parse/validation.
-- `src/main/java/com/rentwise/security/CustomUserDetailsService.java` — Spring Security user loading.
-- `src/main/java/com/rentwise/security/JwtAuthenticationFilter.java` — bearer-token filter.
-- `src/main/java/com/rentwise/security/RestAuthenticationEntryPoint.java` — JSON 401.
-- `src/main/java/com/rentwise/security/RestAccessDeniedHandler.java` — JSON 403.
-- `src/main/java/com/rentwise/security/SecurityConfig.java` — filter chain, provider, encoder, authentication manager, authorization rules.
+- `src/main/java/com/rentwise/user/domain/UserRole.java` �?fixed role enum.
+- `src/main/java/com/rentwise/user/dto/CurrentUserResponse.java` �?`/api/users/me` response.
+- `src/main/java/com/rentwise/user/controller/UserController.java` �?current-user endpoint.
+- `src/main/java/com/rentwise/auth/dto/RegisterRequest.java` �?registration input.
+- `src/main/java/com/rentwise/auth/dto/RegisterResponse.java` �?registration output.
+- `src/main/java/com/rentwise/auth/dto/LoginRequest.java` �?login input.
+- `src/main/java/com/rentwise/auth/dto/LoginResponse.java` �?JWT login output.
+- `src/main/java/com/rentwise/auth/service/AuthService.java` �?registration and login orchestration.
+- `src/main/java/com/rentwise/auth/controller/AuthController.java` �?`/api/auth/**` endpoints.
+- `src/main/java/com/rentwise/security/CurrentUser.java` �?trusted request principal.
+- `src/main/java/com/rentwise/security/JwtService.java` �?token issue/parse/validation.
+- `src/main/java/com/rentwise/security/CustomUserDetailsService.java` �?Spring Security user loading.
+- `src/main/java/com/rentwise/security/JwtAuthenticationFilter.java` �?bearer-token filter.
+- `src/main/java/com/rentwise/security/RestAuthenticationEntryPoint.java` �?JSON 401.
+- `src/main/java/com/rentwise/security/RestAccessDeniedHandler.java` �?JSON 403.
+- `src/main/java/com/rentwise/security/SecurityConfig.java` �?filter chain, provider, encoder, authentication manager, authorization rules.
 
 ### Production files to modify
 
 - `pom.xml`
 - `src/main/java/com/rentwise/user/domain/UserAccount.java`
 - `src/main/java/com/rentwise/user/repository/UserRepository.java`
-- `src/main/java/com/rentwise/user/service/UserDemoDataInitializer.java` — remove after authenticated user creation replaces it.
+- `src/main/java/com/rentwise/user/service/UserDemoDataInitializer.java` �?remove after authenticated user creation replaces it.
 - `src/main/java/com/rentwise/training/repository/DiagnosisSessionRepository.java`
 - `src/main/java/com/rentwise/training/service/TrainingFacade.java`
 - `src/main/java/com/rentwise/training/service/TrainingService.java`
@@ -454,11 +454,11 @@ git commit -m "feat: secure APIs with JWT bearer authentication"
 - Test: `src/test/java/com/rentwise/integration/AuthenticatedLearningFlowIntegrationTest.java`
 
 **Interfaces:**
-- `POST /api/diagnosis/start` — no `userId`; uses `CurrentUser.id`.
-- `GET /api/profile/me` — replaces `/api/profile/{userId}` for learner use.
-- `GET /api/training/next` — no `userId`; uses `CurrentUser.id`.
+- `POST /api/diagnosis/start` �?no `userId`; uses `CurrentUser.id`.
+- `GET /api/profile/me` �?replaces `/api/profile/{userId}` for learner use.
+- `GET /api/training/next` �?no `userId`; uses `CurrentUser.id`.
 - `POST /api/training/answers` request becomes `TrainingAnswerRequest(Long caseId, boolean selectedClarify)`.
-- `POST /api/assessment/start` — no `userId`; uses `CurrentUser.id`.
+- `POST /api/assessment/start` �?no `userId`; uses `CurrentUser.id`.
 - Existing session-path endpoints remain path-addressed pending ownership enforcement in Task 7.
 
 - [ ] **Step 1: Write an authenticated API migration test**

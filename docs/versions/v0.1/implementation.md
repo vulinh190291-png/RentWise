@@ -2,13 +2,13 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build a runnable RentWise modular-monolith MVP that demonstrates diagnosis → mastery profile → adaptive training → feedback → stage assessment, with MySQL persistence and Swagger/OpenAPI.
+**Goal:** Build a runnable RentWise modular-monolith MVP that demonstrates diagnosis �?mastery profile �?adaptive training �?feedback �?stage assessment, with MySQL persistence and Swagger/OpenAPI.
 
 **Architecture:** One Spring Boot application, internally divided into `user`, `training`, `profile`, and `plan` domain modules. Modules do not access each other's repositories directly; cross-module collaboration goes through DTOs/facades so the same boundaries can later become microservice APIs.
 
 **Tech Stack:** Java 17, Spring Boot 3.x, Spring Web, Spring Data JPA, MySQL 8, Bean Validation, Lombok, springdoc-openapi, Maven, JUnit 5.
 
-**Spec:** `docs/superpowers/specs/2026-10-08-rentwise-mvp-design.md`
+**Spec:** `docs/versions/v0.1/design.md`
 
 ## Global Constraints
 
@@ -263,7 +263,7 @@ git commit -m "feat: add adaptive training plan"
 
 - [ ] **Step 1: Write failing integration test for the complete first-run flow**
 
-Test: start diagnosis → submit 10 answers → finish → receive five mastery values → obtain next question from the weakest topic.
+Test: start diagnosis �?submit 10 answers �?finish �?receive five mastery values �?obtain next question from the weakest topic.
 
 - [ ] **Step 2: Run the integration test**
 
@@ -365,7 +365,7 @@ Expected: BUILD SUCCESS with all unit and integration tests passing.
 
 - [ ] **Step 5: Start the app against MySQL and perform a Swagger smoke test**
 
-Verify the complete path: diagnosis → profile → next training → answer → stage assessment.
+Verify the complete path: diagnosis �?profile �?next training �?answer �?stage assessment.
 
 - [ ] **Step 6: Commit**
 
