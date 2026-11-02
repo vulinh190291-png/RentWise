@@ -13,9 +13,9 @@
 
     <groupId>com.rentwise</groupId>
     <artifactId>rentwise</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.3.0-SNAPSHOT</version>
     <name>RentWise</name>
-    <description>RentWise modular monolith with JWT authentication and RBAC</description>
+    <description>RentWise rental clause recognition training system</description>
 
     <properties>
         <java.version>17</java.version>
