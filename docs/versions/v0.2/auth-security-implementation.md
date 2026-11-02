@@ -39,29 +39,29 @@
 
 ### New production files
 
-- `src/main/java/com/rentwise/user/domain/UserRole.java` â€?fixed role enum.
-- `src/main/java/com/rentwise/user/dto/CurrentUserResponse.java` â€?`/api/users/me` response.
-- `src/main/java/com/rentwise/user/controller/UserController.java` â€?current-user endpoint.
-- `src/main/java/com/rentwise/auth/dto/RegisterRequest.java` â€?registration input.
-- `src/main/java/com/rentwise/auth/dto/RegisterResponse.java` â€?registration output.
-- `src/main/java/com/rentwise/auth/dto/LoginRequest.java` â€?login input.
-- `src/main/java/com/rentwise/auth/dto/LoginResponse.java` â€?JWT login output.
-- `src/main/java/com/rentwise/auth/service/AuthService.java` â€?registration and login orchestration.
-- `src/main/java/com/rentwise/auth/controller/AuthController.java` â€?`/api/auth/**` endpoints.
-- `src/main/java/com/rentwise/security/CurrentUser.java` â€?trusted request principal.
-- `src/main/java/com/rentwise/security/JwtService.java` â€?token issue/parse/validation.
-- `src/main/java/com/rentwise/security/CustomUserDetailsService.java` â€?Spring Security user loading.
-- `src/main/java/com/rentwise/security/JwtAuthenticationFilter.java` â€?bearer-token filter.
-- `src/main/java/com/rentwise/security/RestAuthenticationEntryPoint.java` â€?JSON 401.
-- `src/main/java/com/rentwise/security/RestAccessDeniedHandler.java` â€?JSON 403.
-- `src/main/java/com/rentwise/security/SecurityConfig.java` â€?filter chain, provider, encoder, authentication manager, authorization rules.
+- `src/main/java/com/rentwise/user/domain/UserRole.java` ï¿½?fixed role enum.
+- `src/main/java/com/rentwise/user/dto/CurrentUserResponse.java` ï¿½?`/api/users/me` response.
+- `src/main/java/com/rentwise/user/controller/UserController.java` ï¿½?current-user endpoint.
+- `src/main/java/com/rentwise/auth/dto/RegisterRequest.java` ï¿½?registration input.
+- `src/main/java/com/rentwise/auth/dto/RegisterResponse.java` ï¿½?registration output.
+- `src/main/java/com/rentwise/auth/dto/LoginRequest.java` ï¿½?login input.
+- `src/main/java/com/rentwise/auth/dto/LoginResponse.java` ï¿½?JWT login output.
+- `src/main/java/com/rentwise/auth/service/AuthService.java` ï¿½?registration and login orchestration.
+- `src/main/java/com/rentwise/auth/controller/AuthController.java` ï¿½?`/api/auth/**` endpoints.
+- `src/main/java/com/rentwise/security/CurrentUser.java` ï¿½?trusted request principal.
+- `src/main/java/com/rentwise/security/JwtService.java` ï¿½?token issue/parse/validation.
+- `src/main/java/com/rentwise/security/CustomUserDetailsService.java` ï¿½?Spring Security user loading.
+- `src/main/java/com/rentwise/security/JwtAuthenticationFilter.java` ï¿½?bearer-token filter.
+- `src/main/java/com/rentwise/security/RestAuthenticationEntryPoint.java` ï¿½?JSON 401.
+- `src/main/java/com/rentwise/security/RestAccessDeniedHandler.java` ï¿½?JSON 403.
+- `src/main/java/com/rentwise/security/SecurityConfig.java` ï¿½?filter chain, provider, encoder, authentication manager, authorization rules.
 
 ### Production files to modify
 
 - `pom.xml`
 - `src/main/java/com/rentwise/user/domain/UserAccount.java`
 - `src/main/java/com/rentwise/user/repository/UserRepository.java`
-- `src/main/java/com/rentwise/user/service/UserDemoDataInitializer.java` â€?remove after authenticated user creation replaces it.
+- `src/main/java/com/rentwise/user/service/UserDemoDataInitializer.java` ï¿½?remove after authenticated user creation replaces it.
 - `src/main/java/com/rentwise/training/repository/DiagnosisSessionRepository.java`
 - `src/main/java/com/rentwise/training/service/TrainingFacade.java`
 - `src/main/java/com/rentwise/training/service/TrainingService.java`
@@ -454,11 +454,11 @@ git commit -m "feat: secure APIs with JWT bearer authentication"
 - Test: `src/test/java/com/rentwise/integration/AuthenticatedLearningFlowIntegrationTest.java`
 
 **Interfaces:**
-- `POST /api/diagnosis/start` â€?no `userId`; uses `CurrentUser.id`.
-- `GET /api/profile/me` â€?replaces `/api/profile/{userId}` for learner use.
-- `GET /api/training/next` â€?no `userId`; uses `CurrentUser.id`.
+- `POST /api/diagnosis/start` ï¿½?no `userId`; uses `CurrentUser.id`.
+- `GET /api/profile/me` ï¿½?replaces `/api/profile/{userId}` for learner use.
+- `GET /api/training/next` ï¿½?no `userId`; uses `CurrentUser.id`.
 - `POST /api/training/answers` request becomes `TrainingAnswerRequest(Long caseId, boolean selectedClarify)`.
-- `POST /api/assessment/start` â€?no `userId`; uses `CurrentUser.id`.
+- `POST /api/assessment/start` ï¿½?no `userId`; uses `CurrentUser.id`.
 - Existing session-path endpoints remain path-addressed pending ownership enforcement in Task 7.
 
 - [ ] **Step 1: Write an authenticated API migration test**
@@ -703,4 +703,3 @@ Do not declare RentWise v0.2 complete until all of these are evidenced by tests 
 - [ ] `JWT_SECRET` remains externalized;
 - [ ] `mvn clean test` passes;
 - [ ] application starts successfully against MySQL.
-
