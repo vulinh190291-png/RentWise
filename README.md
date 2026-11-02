@@ -106,7 +106,7 @@ rentwise
 如果是**尚未被 v0.2 / `ddl-auto` 部分修改过的 v0.1 开发库**，先备份后可执行一次迁移脚本：
 
 ```bash
-mysql -u root -p < sql/migration-v0.1-to-v0.2.sql
+mysql -u root -p < sql/migration/v0.1-to-v0.2.sql
 
 ### 3. 配置数据库
 
@@ -194,7 +194,7 @@ Content-Type: application/json
 点击 **Authorize**，输入：
 
 ```text
-Bearer <accessToken>
+<accessToken>
 ```
 
 之后调用受保护接口。
@@ -314,5 +314,5 @@ v0.2 重点验证：
 - `docs/mvp.md`
 - `docs/architecture.md`
 - `docs/api.md`
-- `docs/superpowers/specs/2026-10-09-rentwise-v0.2-auth-security-design.md`
-- `docs/superpowers/plans/2026-10-09-rentwise-v0.2-auth-security-implementation.md`
+- `docs/versions/v0.1/...`
+- `docs/versions/v0.2/...`
