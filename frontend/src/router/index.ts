@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Login from '../views/auth/Login.vue'
 import Register from '../views/auth/Register.vue'
 import Dashboard from '../views/dashboard/Dashboard.vue'
+import Diagnosis from '../views/diagnosis/Diagnosis.vue'
 
 const router = createRouter({
     history: createWebHistory(),
@@ -25,6 +26,14 @@ const router = createRouter({
             path: '/dashboard',
             name: 'dashboard',
             component: Dashboard,
+            meta: {
+                requiresAuth: true,
+            },
+        },
+        {
+            path: '/diagnosis',
+            name: 'diagnosis',
+            component: Diagnosis,
             meta: {
                 requiresAuth: true,
             },
