@@ -1,4 +1,7 @@
-
+// 进入学习诊断
+function goDiagnosis() {
+router.push('/diagnosis')
+}
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -9,6 +12,11 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 const loading = ref(false)
+
+// 进入学习诊断
+function goDiagnosis() {
+  router.push('/diagnosis')
+}
 
 // 页面初始化时获取用户信息
 onMounted(async () => {
@@ -55,26 +63,16 @@ async function handleLogout() {
         <p>今天也继续你的学习成长之旅。</p>
       </section>
 
-      <el-card shadow="hover" v-loading="loading">
-        <template #header>
-          <strong>账户信息</strong>
-        </template>
+      <el-card shadow="hover">
+        <h3>学习诊断</h3>
+        <p>通过真实租赁场景，了解自己的知识掌握情况。</p>
 
-        <el-descriptions :column="1" border v-if="authStore.user">
-          <el-descriptions-item label="用户 ID">
-            {{ authStore.user.id }}
-          </el-descriptions-item>
-
-          <el-descriptions-item label="用户名">
-            {{ authStore.user.username }}
-          </el-descriptions-item>
-
-          <el-descriptions-item label="用户角色">
-            <el-tag type="success">
-              {{ authStore.user.role }}
-            </el-tag>
-          </el-descriptions-item>
-        </el-descriptions>
+        <el-button
+            type="primary"
+            @click="goDiagnosis"
+        >
+          进入诊断
+        </el-button>
       </el-card>
 
       <section class="modules">
