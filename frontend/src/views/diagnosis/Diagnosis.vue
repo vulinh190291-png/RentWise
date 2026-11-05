@@ -35,7 +35,7 @@ const currentIndex = ref(0)
 
 const selectedClarify = ref<boolean | null>(null)
 const answerResult = ref<AnswerResult | null>(null)
-
+const correctCount = ref(0)
 const completion = ref<DiagnosisCompleteResponse | null>(null)
 
 // 当前题目
@@ -98,6 +98,7 @@ function getErrorMessage(error: unknown): string {
 
 // 开始诊断
 async function handleStart() {
+  correctCount.value = 0
   starting.value = true
   errorMessage.value = ''
 
@@ -152,7 +153,9 @@ async function handleSubmit() {
     )
 
     answerResult.value = result
-
+    if (result.correct) {
+      correctCount.value++
+    }
   } catch (error) {
     errorMessage.value = getErrorMessage(error)
     ElMessage.error(errorMessage.value)
@@ -455,6 +458,9 @@ function goDashboard() {
                 class="completion-info"
             >
               <el-tag type="success">
+                本次答对 {{ correctCount }} / {{ cases.length }} 题
+              </el-tag>
+              <el-tag type="success">
                 已分析 {{ completion.profile.topics.length }} 个知识主题
               </el-tag>
 
@@ -465,8 +471,12 @@ function goDashboard() {
 
             <el-button
                 type="primary"
-                @click="goDashboard"
+                @click="router.push('/results')"
             >
+              查看学习画像
+            </el-button>
+
+            <el-button @click="goDashboard">
               返回 Dashboard
             </el-button>
 

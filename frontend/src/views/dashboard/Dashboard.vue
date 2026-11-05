@@ -1,24 +1,101 @@
-// 进入学习诊断
-function goDiagnosis() {
-router.push('/diagnosis')
-}
+
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { useAuthStore } from '../../stores/auth'
+import { getMyProfile } from '../../api/profile'
+import { getNextTraining } from '../../api/plan'
+
+import type {
+  Difficulty,
+  NextTrainingResponse,
+  RiskTopic,
+  UserProfileResponse,
+} from '../../types/api'
 
 const router = useRouter()
 const authStore = useAuthStore()
 
 const loading = ref(false)
+const dataLoading = ref(true)
 
-// 进入学习诊断
-function goDiagnosis() {
-  router.push('/diagnosis')
+const profile = ref<UserProfileResponse | null>(null)
+const recommendation = ref<NextTrainingResponse | null>(null)
+
+const profileError = ref('')
+const recommendationError = ref('')
+
+const topicNames: Record<RiskTopic, string> = {
+  DEPOSIT_RETURN: '押金返还',
+  EARLY_TERMINATION: '提前退租',
+  REPAIR_RESPONSIBILITY: '维修责任',
+  COST_BEARING: '费用承担',
+  BREACH_LIABILITY: '违约责任',
 }
 
-// 页面初始化时获取用户信息
+const difficultyNames: Record<Difficulty, string> = {
+  EASY: '简单',
+  MEDIUM: '中等',
+  HARD: '困难',
+}
+
+function getErrorMessage(error: unknown) {
+  return error instanceof Error
+      ? error.message
+      : '加载失败，请稍后重试'
+}
+
+// 平均掌握度
+const averageMastery = computed(() => {
+  const topics = profile.value?.topics ?? []
+
+  if (topics.length === 0) return 0
+
+  const total = topics.reduce(
+      (sum, item) => sum + item.masteryScore,
+      0,
+  )
+
+  return Math.round(total / topics.length)
+})
+
+// 找出掌握度最低的主题
+const weakestTopic = computed(() => {
+  const topics = profile.value?.topics ?? []
+
+  return [...topics].sort(
+      (a, b) => a.masteryScore - b.masteryScore,
+  )[0] ?? null
+})
+
+// 获取学习画像和推荐
+async function loadLearningData() {
+  dataLoading.value = true
+  profileError.value = ''
+  recommendationError.value = ''
+
+  profile.value = null
+  recommendation.value = null
+
+  try {
+    profile.value = await getMyProfile()
+  } catch (error) {
+    profileError.value = getErrorMessage(error)
+    dataLoading.value = false
+    return
+  }
+
+  try {
+    recommendation.value = await getNextTraining()
+  } catch (error) {
+    recommendationError.value = getErrorMessage(error)
+  } finally {
+    dataLoading.value = false
+  }
+}
+
+// 页面初始化
 onMounted(async () => {
   if (!authStore.user) {
     loading.value = true
@@ -28,24 +105,33 @@ onMounted(async () => {
     } catch {
       ElMessage.error('登录状态已失效，请重新登录')
       await router.replace('/login')
+      return
     } finally {
       loading.value = false
     }
   }
+
+  await loadLearningData()
 })
 
-// 退出登录
+function goDiagnosis() {
+  router.push('/diagnosis')
+}
+
+function goResults() {
+  router.push('/results')
+}
+
 async function handleLogout() {
   authStore.logout()
-
   ElMessage.success('已退出登录')
-
   await router.replace('/login')
 }
 </script>
 
 <template>
   <div class="dashboard">
+
     <header class="header">
       <div class="brand">
         <span class="logo">R</span>
@@ -58,52 +144,176 @@ async function handleLogout() {
     </header>
 
     <main class="content">
+
       <section class="welcome">
-        <h1>欢迎回来，{{ authStore.user?.username }}</h1>
-        <p>今天也继续你的学习成长之旅。</p>
+        <h1>
+          欢迎回来，{{ authStore.user?.username || '学习者' }}
+        </h1>
+        <p>通过真实租赁场景训练，提高风险识别能力。</p>
       </section>
 
-      <el-card shadow="hover">
-        <h3>学习诊断</h3>
-        <p>通过真实租赁场景，了解自己的知识掌握情况。</p>
+      <!-- 学习诊断入口 -->
+      <el-card shadow="never" class="section-card">
+        <h2>学习诊断</h2>
+        <p>通过10道租赁条款识别题，了解自己的知识掌握情况。</p>
 
-        <el-button
-            type="primary"
-            @click="goDiagnosis"
-        >
-          进入诊断
-        </el-button>
+        <div class="actions">
+          <el-button type="primary" @click="goDiagnosis">
+            开始学习诊断
+          </el-button>
+
+          <el-button @click="goResults">
+            查看完整学习画像
+          </el-button>
+        </div>
       </el-card>
 
+      <!-- 加载中 -->
+      <el-card v-if="dataLoading" shadow="never" class="section-card">
+        <el-skeleton :rows="4" animated />
+      </el-card>
+
+      <!-- 未获得学习画像 -->
+      <el-card
+          v-else-if="!profile"
+          shadow="never"
+          class="section-card"
+      >
+        <el-empty description="暂无可展示的学习画像">
+          <p class="hint">
+            尚未完成初始诊断，或学习数据暂时无法读取。
+          </p>
+
+          <p v-if="profileError" class="hint">
+            {{ profileError }}
+          </p>
+
+          <el-button type="primary" @click="goDiagnosis">
+            前往学习诊断
+          </el-button>
+
+          <el-button @click="loadLearningData">
+            重新加载
+          </el-button>
+        </el-empty>
+      </el-card>
+
+      <!-- 已有学习画像 -->
+      <template v-else>
+
+        <section class="stats-grid">
+          <el-card shadow="never">
+            <el-statistic
+                title="平均掌握度"
+                :value="averageMastery"
+                suffix="%"
+            />
+          </el-card>
+
+          <el-card shadow="never">
+            <el-statistic
+                title="已分析知识主题"
+                :value="profile.topics.length"
+                suffix="个"
+            />
+          </el-card>
+        </section>
+
+        <el-card shadow="never" class="section-card">
+          <template #header>
+            <h2>知识主题掌握度</h2>
+          </template>
+
+          <div
+              v-for="item in profile.topics"
+              :key="item.topic"
+              class="topic-item"
+          >
+            <div class="topic-heading">
+              <span>
+                {{ item.topicName || topicNames[item.topic] }}
+              </span>
+              <strong>{{ item.masteryScore }}%</strong>
+            </div>
+
+            <el-progress
+                :percentage="item.masteryScore"
+                :stroke-width="10"
+                :show-text="false"
+            />
+          </div>
+
+          <p class="hint">
+            掌握度由后端根据学习记录计算，不等于单次正确率。
+          </p>
+
+          <el-button @click="goResults">
+            查看详细分析
+          </el-button>
+        </el-card>
+
+        <el-card shadow="never" class="section-card">
+          <template #header>
+            <h2>下一步学习建议</h2>
+          </template>
+
+          <template v-if="recommendation">
+            <div class="recommendation-tags">
+              <el-tag type="primary">
+                {{ topicNames[recommendation.topic] }}
+              </el-tag>
+
+              <el-tag type="warning">
+                {{ difficultyNames[recommendation.difficulty] }}难度
+              </el-tag>
+            </div>
+
+            <p>
+              {{ recommendation.reason }}
+            </p>
+          </template>
+
+          <template v-else>
+            <p v-if="weakestTopic">
+              当前最低掌握度主题：
+              <strong>{{ weakestTopic.topicName }}</strong>
+              （{{ weakestTopic.masteryScore }}%）
+            </p>
+
+            <p class="hint">
+              {{ recommendationError || '暂无训练推荐' }}
+            </p>
+          </template>
+
+          <el-button type="primary" @click="goResults">
+            查看推荐训练详情
+          </el-button>
+        </el-card>
+      </template>
+
+      <!-- 其他功能 -->
       <section class="modules">
-        <h2>学习中心</h2>
+        <h2>其他训练模块</h2>
 
         <el-row :gutter="16">
-          <el-col :xs="24" :sm="12" :md="8">
-            <el-card shadow="hover">
-              <h3>学习诊断</h3>
-              <p>了解自己的知识掌握情况。</p>
-              <el-tag>待开发</el-tag>
-            </el-card>
-          </el-col>
-
-          <el-col :xs="24" :sm="12" :md="8">
+          <el-col :xs="24" :sm="12">
             <el-card shadow="hover">
               <h3>自适应训练</h3>
-              <p>针对薄弱知识点开展训练。</p>
-              <el-tag>待开发</el-tag>
+              <p>围绕薄弱主题进行针对性练习。</p>
+              <el-tag type="info">下一阶段开发</el-tag>
             </el-card>
           </el-col>
 
-          <el-col :xs="24" :sm="12" :md="8">
+          <el-col :xs="24" :sm="12">
             <el-card shadow="hover">
               <h3>阶段测评</h3>
-              <p>检验阶段性学习成果。</p>
-              <el-tag>待开发</el-tag>
+              <p>检验阶段性的学习效果。</p>
+              <el-tag type="info">下一阶段开发</el-tag>
             </el-card>
           </el-col>
         </el-row>
       </section>
+
     </main>
   </div>
 </template>
@@ -115,7 +325,7 @@ async function handleLogout() {
 }
 
 .header {
-  height: 64px;
+  height: 68px;
   padding: 0 6%;
   display: flex;
   justify-content: space-between;
@@ -130,7 +340,6 @@ async function handleLogout() {
   gap: 12px;
   font-size: 20px;
   font-weight: 700;
-  color: #1e293b;
 }
 
 .logo {
@@ -154,13 +363,55 @@ async function handleLogout() {
 }
 
 .welcome h1 {
-  font-size: 28px;
   color: #1e293b;
 }
 
 .welcome p,
-.modules p {
+.section-card p,
+.modules p,
+.hint {
   color: #64748b;
+  line-height: 1.8;
+}
+
+.section-card {
+  margin-bottom: 20px;
+  border-radius: 12px;
+}
+
+.section-card h2 {
+  margin: 0 0 14px;
+  color: #1e293b;
+}
+
+.actions,
+.recommendation-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.topic-item {
+  margin-bottom: 22px;
+}
+
+.topic-heading {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: #334155;
+}
+
+.hint {
+  font-size: 13px;
 }
 
 .modules {
@@ -168,10 +419,16 @@ async function handleLogout() {
 }
 
 .modules h2 {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
-.modules h3 {
-  color: #1e293b;
+@media (max-width: 600px) {
+  .content {
+    padding: 24px 16px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
