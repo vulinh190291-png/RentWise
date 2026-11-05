@@ -122,7 +122,7 @@ export interface NextTrainingResponse {
     topic: RiskTopic
     difficulty: Difficulty
     trainingCase: CaseView
-    learningCard: LearningCardView
+    learningCard: LearningCardView | null
     reason: string
 }
 

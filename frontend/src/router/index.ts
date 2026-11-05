@@ -4,6 +4,7 @@ import Login from '../views/auth/Login.vue'
 import Register from '../views/auth/Register.vue'
 import Dashboard from '../views/dashboard/Dashboard.vue'
 import Diagnosis from '../views/diagnosis/Diagnosis.vue'
+import Results from '../views/results/Results.vue'
 
 const router = createRouter({
     history: createWebHistory(),
@@ -34,6 +35,14 @@ const router = createRouter({
             path: '/diagnosis',
             name: 'diagnosis',
             component: Diagnosis,
+            meta: {
+                requiresAuth: true,
+            },
+        },
+        {
+            path: '/results',
+            name: 'results',
+            component: Results,
             meta: {
                 requiresAuth: true,
             },
