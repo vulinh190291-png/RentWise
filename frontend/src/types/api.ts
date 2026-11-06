@@ -134,3 +134,28 @@ export interface DiagnosisCompleteResponse {
     plan: PlanSummary
     nextTraining: NextTrainingResponse
 }
+
+//
+// Adaptive Training 自适应训练模块
+//
+
+// 提交训练答案
+export interface TrainingAnswerRequest {
+    caseId: number
+    selectedClarify: boolean
+}
+
+// 后端提供的即时反馈
+export interface FeedbackView {
+    correct: boolean
+    explanation: string
+    suggestedQuestion: string
+}
+
+// 提交训练答案后的完整响应
+export interface TrainingAnswerResponse {
+    answer: AnswerResult
+    feedback: FeedbackView
+    updatedMastery: TopicMasteryView
+    nextTraining: NextTrainingResponse
+}

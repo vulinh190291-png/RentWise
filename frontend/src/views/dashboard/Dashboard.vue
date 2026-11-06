@@ -300,7 +300,12 @@ async function handleLogout() {
             <el-card shadow="hover">
               <h3>自适应训练</h3>
               <p>围绕薄弱主题进行针对性练习。</p>
-              <el-tag type="info">下一阶段开发</el-tag>
+              <el-button
+                  type="primary"
+                  @click="router.push('/training')"
+              >
+                开始自适应训练
+              </el-button>
             </el-card>
           </el-col>
 
