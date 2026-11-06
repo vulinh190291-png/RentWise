@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -312,8 +311,14 @@ async function handleLogout() {
           <el-col :xs="24" :sm="12">
             <el-card shadow="hover">
               <h3>阶段测评</h3>
-              <p>检验阶段性的学习效果。</p>
-              <el-tag type="info">下一阶段开发</el-tag>
+              <p>通过五个知识主题的测试，检验阶段学习成果。</p>
+
+              <el-button
+                  type="primary"
+                  @click="router.push('/assessment')"
+              >
+                开始阶段测评
+              </el-button>
             </el-card>
           </el-col>
         </el-row>

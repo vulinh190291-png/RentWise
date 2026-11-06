@@ -159,3 +159,26 @@ export interface TrainingAnswerResponse {
     updatedMastery: TopicMasteryView
     nextTraining: NextTrainingResponse
 }
+
+//
+// Assessment 阶段测评模块
+//
+
+// 测评时提交的单道题答案
+export interface AssessmentAnswerInput {
+    caseId: number
+    selectedClarify: boolean
+}
+
+// 阶段测评完成请求
+export interface AssessmentFinishRequest {
+    answers: AssessmentAnswerInput[]
+}
+
+// 阶段测评完成响应
+export interface AssessmentResultResponse {
+    sessionId: number
+    userId: number
+    profile: UserProfileResponse
+    nextTraining: NextTrainingResponse
+}

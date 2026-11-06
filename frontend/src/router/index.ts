@@ -5,6 +5,7 @@ import Register from '../views/auth/Register.vue'
 import Dashboard from '../views/dashboard/Dashboard.vue'
 import Diagnosis from '../views/diagnosis/Diagnosis.vue'
 import Results from '../views/results/Results.vue'
+import Assessment from '../views/assessment/Assessment.vue'
 
 const router = createRouter({
     history: createWebHistory(),
@@ -51,6 +52,14 @@ const router = createRouter({
             path: '/training',
             name: 'training',
             component: Training,
+            meta: {
+                requiresAuth: true,
+            },
+        },
+        {
+            path: '/assessment',
+            name: 'assessment',
+            component: Assessment,
             meta: {
                 requiresAuth: true,
             },
