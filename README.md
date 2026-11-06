@@ -1,315 +1,234 @@
+
 # RentWise
 
-RentWise 是一个面向第一次独立租房用户的**租房签约条款识别训练系统**。当前仓库进入 **v0.2：JWT Authentication & RBAC**，仍保持模块化单体架构，在 v0.1 自适应训练闭环外增加真实用户身份与权限边界。
+基于 Spring Boot 与 Vue 3 的租赁合同风险识别训练系统。
 
-> RentWise 不替用户审合同，也不判断条款合法/违法。它训练用户识别“哪些内容值得继续确认”。
+## 项目简介
 
-## v0.2 核心闭环
+RentWise 面向初次独立租房的用户，通过真实风格的租赁合同条款案例，训练用户识别签约过程中值得进一步澄清的风险信息。
 
-```text
-注册
-  ↓
-登录
-  ↓
-JWT Access Token
-  ↓
-初始诊断
-  ↓
-五类 Mastery 能力画像
-  ↓
-薄弱主题优先训练
-  ↓
-即时反馈 + 建议追问
-  ↓
-Mastery 更新
-  ↓
-阶段测评
-```
+系统提供初始诊断、学习画像、自适应训练、即时反馈和阶段测评，形成持续学习闭环。
 
-### 身份与权限
+> 本项目是租赁风险识别教育工具，不提供法律意见，也不自动判断合同条款是否合法。
 
-- 用户名 + 密码注册
-- BCrypt 密码哈希，不保存明文密码
-- 登录后签发 60 分钟 JWT Access Token
-- Spring Security 无状态认证（STATELESS）
-- `LEARNER / CONTENT_EDITOR / ADMIN` 三种固定角色
-- 公开注册只能创建 `LEARNER`
-- learner-facing API 不再接受客户端自行指定 `userId`
-- diagnosis / assessment 的 `sessionId` 会校验归属，防止跨用户访问
+## 核心功能
 
-当前 v0.2 不做 Refresh Token、Token 黑名单、验证码、找回密码、OAuth2/OIDC、第三方登录、动态权限表或前端登录页面。
+1. 用户注册与登录：JWT 身份认证和 BCrypt 密码加密存储。
+2. 初始诊断：完成 10 道租赁合同条款识别题。
+3. 学习画像：展示五个知识主题的掌握度。
+4. 个性化推荐：优先推荐薄弱主题的训练案例。
+5. 自适应训练：提交答案后获得反馈，动态更新掌握度。
+6. 阶段测评：完成 5 道主题测评题，更新学习画像与训练计划。
 
-## 为什么仍然先做模块化单体
+五个知识主题：
 
-代码只部署为一个 Spring Boot 应用，但内部按未来服务边界组织：
-
-```text
-user      -> 用户身份
-training  -> 题目与答题事实
-profile   -> Mastery 与能力画像
-plan      -> 下一步训练决策
-auth      -> 注册 / 登录
-security  -> JWT / Spring Security / RBAC
-```
-
-核心原则：
-
-```text
-User = identity
-Training = facts
-Profile = state
-Plan = decision
-```
-
-v0.2 先把认证授权边界做正确，不提前拆微服务。
+- 押金返还（DEPOSIT_RETURN）
+- 提前退租（EARLY_TERMINATION）
+- 维修责任（REPAIR_RESPONSIBILITY）
+- 费用承担（COST_BEARING）
+- 违约责任（BREACH_LIABILITY）
 
 ## 技术栈
 
-- Java 17
-- Spring Boot 3.4.5
-- Spring Security 6
-- Spring Web
-- Spring Data JPA
-- Bean Validation
-- MySQL 8
-- JJWT 0.13.0
-- BCrypt
-- springdoc-openapi / Swagger UI
-- Maven
-- JUnit 5 / MockMvc / AssertJ
-- H2（仅测试环境）
+### 后端
+
+- Java 17、Spring Boot 3.4.5
+- Spring Security、JWT、BCrypt
+- Spring Data JPA、MySQL 8
+- Maven、Swagger / OpenAPI
+- JUnit 5、MockMvc、H2（测试环境）
+
+### 前端
+
+- Vue 3、TypeScript、Vite
+- Pinia、Vue Router
+- Axios、Element Plus
+
+## 系统架构
+
+当前采用模块化单体架构（Modular Monolith）。
+
+主要业务模块：
+
+| 模块 | 职责 |
+| --- | --- |
+| User | 用户身份 |
+| Training | 案例、诊断、训练、测评及答题记录 |
+| Profile | 掌握度计算与学习画像 |
+| Plan | 个性化训练推荐 |
+
+Auth / Security 负责身份认证和权限控制。
+
+核心设计原则：
+
+User = Identity  
+Training = Facts  
+Profile = State  
+Plan = Decision
+
+目前仍为单个 Spring Boot 应用，尚未拆分为独立微服务。
 
 ## 本地运行
 
-### 1. 准备环境
+### 1. 环境要求
 
-需要：
-
-- JDK 17+
+- JDK 17
 - Maven 3.9+
 - MySQL 8
+- Node.js 与 npm
 
 ### 2. 初始化数据库
 
-全新环境：
+默认数据库名称：`rentwise`
 
-```bash
-mysql -u root -p < sql/init.sql
-```
+全新环境使用：
 
-默认数据库名：
+`sql/init.sql`
 
-```text
-rentwise
-```
+可以通过 MySQL Shell 的 SQL 模式执行初始化脚本。
 
-如果是**尚未被 v0.2 / `ddl-auto` 部分修改过的 v0.1 开发库**，先备份后可执行一次迁移脚本：
+已有数据库不要重复执行旧版迁移脚本，以免破坏现有数据。
 
-```bash
-mysql -u root -p < sql/migration/v0.1-to-v0.2.sql
+旧版迁移脚本位置：
 
-### 3. 配置数据库
+`sql/migrations/v0.1-to-v0.2.sql`
 
-默认配置：
+### 3. 配置环境变量
 
-```text
-DB_URL=jdbc:mysql://localhost:3306/rentwise?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false
-DB_USERNAME=root
-DB_PASSWORD=root
-```
+后端使用以下环境变量：
+
+- DB_USERNAME：MySQL 用户名
+- DB_PASSWORD：MySQL 密码
+- JWT_SECRET：JWT 签名密钥，至少 32 字节
+
+可选：
+
+- DB_URL：数据库连接地址
+- SERVER_PORT：服务端口，默认 8080
+- JWT_EXPIRATION_SECONDS：Token 有效期，默认 3600 秒
 
 Windows PowerShell 示例：
 
 ```powershell
-$env:DB_USERNAME="root"
-$env:DB_PASSWORD="your_password"
+$env:DB_USERNAME = "root"
+$env:DB_PASSWORD = Read-Host "MySQL root 密码"
+
+$bytes = New-Object byte[] 32
+$rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
+$rng.GetBytes($bytes)
+$rng.Dispose()
+$env:JWT_SECRET = [Convert]::ToBase64String($bytes)
 ```
 
-### 4. 配置 JWT Secret
+不要将实际密码或 JWT 密钥提交至 GitHub。
 
-`JWT_SECRET` 不写入仓库，运行前必须在环境变量中提供至少 32 字节的本地密钥。
+### 4. 启动后端
 
-PowerShell 示例：
-
-```powershell
-$env:JWT_SECRET="rentwise-local-secret-change-me-1234567890"
-```
-
-Access Token 默认有效期为 3600 秒，也可以通过：
-
-```powershell
-$env:JWT_EXPIRATION_SECONDS="3600"
-```
-
-覆盖。
-
-### 5. 启动
+在项目根目录执行：
 
 ```powershell
 mvn spring-boot:run
 ```
 
-默认地址：
+后端默认地址：
 
-```text
 http://localhost:8080
-```
 
 Swagger UI：
 
-```text
 http://localhost:8080/swagger-ui.html
+
+### 5. 启动前端
+
+另开一个 PowerShell 终端：
+
+```powershell
+cd frontend
+npm.cmd install
+npm.cmd run dev
 ```
 
-## v0.2 演示顺序
+前端默认地址：
 
-### 1. 注册
+http://localhost:5173
 
-```http
-POST /api/auth/register
-Content-Type: application/json
+Vite 将 `/api` 请求代理到后端的 8080 端口。
 
-{
-  "username": "atopos",
-  "password": "12345678"
-}
-```
+## 主要 API
 
-### 2. 登录
+| 功能 | 接口 |
+| --- | --- |
+| 注册 | POST /api/auth/register |
+| 登录 | POST /api/auth/login |
+| 当前用户 | GET /api/users/me |
+| 开始诊断 | POST /api/diagnosis/start |
+| 提交诊断答案 | POST /api/diagnosis/{sessionId}/answers |
+| 完成诊断 | POST /api/diagnosis/{sessionId}/finish |
+| 学习画像 | GET /api/profile/me |
+| 获取训练推荐 | GET /api/training/next |
+| 提交训练答案 | POST /api/training/answers |
+| 开始阶段测评 | POST /api/assessment/start |
+| 完成阶段测评 | POST /api/assessment/{sessionId}/finish |
 
-```http
-POST /api/auth/login
-Content-Type: application/json
-
-{
-  "username": "atopos",
-  "password": "12345678"
-}
-```
-
-从响应中取得 `accessToken`。
-
-### 3. 在 Swagger 中授权
-
-点击 **Authorize**，输入：
-
-```text
-<accessToken>
-```
-
-之后调用受保护接口。
-
-### 4. 验证当前用户
-
-```http
-GET /api/users/me
-```
-
-### 5. 开始诊断
-
-```http
-POST /api/diagnosis/start
-```
-
-不再传 `userId`。
-
-### 6. 提交 10 道诊断答案
-
-```http
-POST /api/diagnosis/{sessionId}/answers
-Content-Type: application/json
-
-{
-  "caseId": 1,
-  "selectedClarify": true
-}
-```
-
-### 7. 完成诊断
-
-```http
-POST /api/diagnosis/{sessionId}/finish
-```
-
-### 8. 查看能力画像
-
-```http
-GET /api/profile/me
-```
-
-### 9. 获取并提交训练题
-
-```http
-GET /api/training/next
-```
-
-```http
-POST /api/training/answers
-Content-Type: application/json
-
-{
-  "caseId": 5,
-  "selectedClarify": true
-}
-```
-
-### 10. 阶段测评
-
-```http
-POST /api/assessment/start
-```
-
-然后：
-
-```http
-POST /api/assessment/{sessionId}/finish
-Content-Type: application/json
-
-{
-  "answers": [
-    {"caseId": 1, "selectedClarify": true},
-    {"caseId": 3, "selectedClarify": true},
-    {"caseId": 5, "selectedClarify": true},
-    {"caseId": 7, "selectedClarify": true},
-    {"caseId": 9, "selectedClarify": true}
-  ]
-}
-```
-
-## 401 与 403
-
-```text
-401 Unauthorized
-```
-
-表示没有成功认证，例如 Token 缺失、过期、格式错误或签名无效。
-
-```text
-403 Forbidden
-```
-
-表示身份已经认证成功，但当前角色没有访问目标资源的权限。
+除公开认证接口外，业务接口需要 Bearer JWT。
 
 ## 测试
 
-```bash
+后端测试：
+
+```powershell
 mvn clean test
 ```
 
-v0.2 重点验证：
+前端生产构建：
 
-- 公开注册只能创建 LEARNER
-- BCrypt 保存密码哈希
-- 用户名重复（含大小写变体）被拒绝
-- 正确登录返回 JWT
-- 错误 / 不存在 / disabled 账号登录失败
-- 缺失、损坏、篡改、过期 Token 被拒绝
-- 角色不足返回 403
-- learner API 不再信任客户端 userId
-- 不同用户不能操作对方的 diagnosis / assessment session
-- 原有诊断 → Mastery → 自适应训练 → 阶段测评闭环仍然通过
+```powershell
+cd frontend
+npm.cmd run build
+```
 
-## 产品设计与实现文档
+业务验收范围：
+
+- 注册、登录与退出
+- 初始诊断
+- 五主题学习画像
+- 个性化训练与反馈
+- 阶段测评
+- JWT 失效与未授权访问
+- 重复提交与网络异常
+
+## 已知限制
+
+- 题库规模较小，部分训练案例可能重复。
+- 尚未实现训练历史趋势图。
+- 不提供 Refresh Token。
+- 阶段测评刷新页面后，未提交的答案不会保留。
+- 当前不是分布式微服务系统。
+- 不提供法律意见或自动合同合法性认定。
+
+## 后续演进
+
+根据课程要求和真实业务需求，逐步评估：
+
+- Nacos：服务注册发现和配置管理
+- Gateway：统一 API 入口
+- Sentinel：限流和服务降级
+- Seata：跨服务事务协调
+- SkyWalking：分布式链路追踪
+
+以上组件属于后续规划，不属于当前 v0.3 的已实现功能。
+
+## 项目文档
+
+- docs/architecture.md
+- docs/api.md
+- CHANGELOG.md
+
+## 版本说明
+
+- v0.1：基础业务闭环
+- v0.2：JWT 身份认证与权限控制
+- v0.3：Vue 前端与完整学习交互闭环
 
 - `docs/mvp.md`
 - `docs/architecture.md`
