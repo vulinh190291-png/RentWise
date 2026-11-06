@@ -1,6 +1,6 @@
 # RentWise Architecture
 
-Current baseline: v0.2.0
+Current baseline: v0.3.0
 
 RentWise 当前采用模块化单体架构（Modular Monolith）。系统只部署为一个 Spring Boot 应用，但内部按照未来服务边界进行模块划分。
 
@@ -17,7 +17,8 @@ RentWise 当前采用模块化单体架构（Modular Monolith）。系统只部�
 
 ### User
 
-负责最小用户身份数据。v0.1 不提前实现复杂登录、JWT、RBAC。
+v0.2 已实现 JWT 认证及 RBAC。
+v0.3 在此基础上提供完整的 Vue 前端学习交互。
 
 ### Training
 
