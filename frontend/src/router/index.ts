@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
+import Training from '../views/training/Training.vue'
 import Login from '../views/auth/Login.vue'
 import Register from '../views/auth/Register.vue'
 import Dashboard from '../views/dashboard/Dashboard.vue'
@@ -43,6 +43,14 @@ const router = createRouter({
             path: '/results',
             name: 'results',
             component: Results,
+            meta: {
+                requiresAuth: true,
+            },
+        },
+        {
+            path: '/training',
+            name: 'training',
+            component: Training,
             meta: {
                 requiresAuth: true,
             },

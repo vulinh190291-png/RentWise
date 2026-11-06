@@ -281,9 +281,12 @@ v-if="recommendation.learningCard"
 </p>
 </div>
 
-<p class="tip">
-    当前展示训练推荐预览，正式答题功能将在训练模块实现。
-            </p>
+      <el-button
+          type="primary"
+          @click="router.push('/training')"
+      >
+        开始推荐训练
+      </el-button>
             </template>
 
             <el-alert
