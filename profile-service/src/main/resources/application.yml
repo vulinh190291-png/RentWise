@@ -1,3 +1,4 @@
+
 spring:
   application:
     name: profile-service
@@ -11,9 +12,6 @@ spring:
     hibernate:
       ddl-auto: update
     open-in-view: false
-    properties:
-      hibernate:
-        format_sql: true
 
   sql:
     init:
@@ -22,3 +20,6 @@ spring:
 server:
   address: 127.0.0.1
   port: 8083
+
+rentwise:
+  internal-key: ${INTERNAL_API_KEY}
