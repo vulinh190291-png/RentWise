@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:rentwise;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+  sql:
+    init:
+      mode: never
+
+security:
+  jwt:
+    secret: 0123456789abcdef0123456789abcdef-test-secret
+    expiration-seconds: 3600
+
+rentwise:
+  internal-key: rentwise-test-only-internal-key-0123456789
+  profile:
+    remote-enabled: false

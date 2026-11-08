@@ -1,10 +1,12 @@
 com\rentwise\profilesvc\ProfileSnapshotService$ProfileView.class
 com\rentwise\profilesvc\ProfileServiceApplication.class
 com\rentwise\profilesvc\ProfileSnapshot$TopicFacts.class
+com\rentwise\profilesvc\ProfileSyncCheckpointRepository.class
+com\rentwise\profilesvc\ProfileSnapshot$AnswerFact.class
 com\rentwise\profilesvc\ProfileSnapshotService$TopicView.class
 com\rentwise\profilesvc\ProfileInternalController.class
 com\rentwise\profilesvc\UserMasteryRepository.class
-com\rentwise\profilesvc\ProfileSnapshot$AnswerFact.class
 com\rentwise\profilesvc\ProfileSnapshot.class
+com\rentwise\profilesvc\ProfileSyncCheckpoint.class
 com\rentwise\profilesvc\UserMastery.class
 com\rentwise\profilesvc\ProfileSnapshotService.class

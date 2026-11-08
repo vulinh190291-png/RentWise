@@ -29,11 +29,14 @@ public class ProfileSnapshotService {
     );
 
     private final UserMasteryRepository repository;
+    private final ProfileSyncCheckpointRepository checkpointRepository;
 
     public ProfileSnapshotService(
-            UserMasteryRepository repository
+            UserMasteryRepository repository,
+            ProfileSyncCheckpointRepository checkpointRepository
     ) {
         this.repository = repository;
+        this.checkpointRepository = checkpointRepository;
     }
 
     @Transactional
@@ -42,6 +45,19 @@ public class ProfileSnapshotService {
             ProfileSnapshot snapshot
     ) {
         validateSnapshot(snapshot);
+
+        ProfileSyncCheckpoint checkpoint =
+                checkpointRepository.findById(userId)
+                        .orElseGet(() ->
+                                new ProfileSyncCheckpoint(userId)
+                        );
+
+        // 已经处理过相同或更新的版本，
+        // 不再修改五个主题的画像。
+        if (snapshot.snapshotVersion()
+                <= checkpoint.getLastAnswerId()) {
+            return getProfile(userId);
+        }
 
         Map<String, ProfileSnapshot.TopicFacts> byTopic =
                 new HashMap<>();
@@ -56,18 +72,19 @@ public class ProfileSnapshotService {
 
             int score = calculateScore(answers);
 
-            int consecutiveWrong = calculateConsecutiveWrong(
-                    topic,
-                    snapshot.recentUserAnswers()
-            );
+            int consecutiveWrong =
+                    calculateConsecutiveWrong(
+                            topic,
+                            snapshot.recentUserAnswers()
+                    );
 
             String lastDifficulty =
                     answers.get(0).difficulty();
 
             UserMastery mastery = repository
                     .findByUserIdAndTopic(userId, topic)
-                    .orElseGet(
-                            () -> new UserMastery(userId, topic)
+                    .orElseGet(() ->
+                            new UserMastery(userId, topic)
                     );
 
             mastery.update(
@@ -78,6 +95,11 @@ public class ProfileSnapshotService {
 
             repository.save(mastery);
         }
+
+        // 与上面的画像写入处于同一事务。
+        // 并发更新时由 JPA 乐观锁进行冲突检测。
+        checkpoint.advanceTo(snapshot.snapshotVersion());
+        checkpointRepository.save(checkpoint);
 
         return getProfile(userId);
     }
@@ -94,8 +116,7 @@ public class ProfileSnapshotService {
             );
         }
 
-        Map<String, UserMastery> byTopic =
-                new HashMap<>();
+        Map<String, UserMastery> byTopic = new HashMap<>();
 
         for (UserMastery row : rows) {
             byTopic.put(row.getTopic(), row);
@@ -130,10 +151,11 @@ public class ProfileSnapshotService {
             ProfileSnapshot snapshot
     ) {
         if (snapshot == null
+                || snapshot.snapshotVersion() <= 0
                 || snapshot.topics() == null
                 || snapshot.recentUserAnswers() == null
                 || snapshot.topics().size() != TOPICS.size()) {
-            badRequest("Five topic snapshots required");
+            badRequest("Invalid profile snapshot");
         }
 
         Set<String> seen = new HashSet<>();
@@ -159,7 +181,7 @@ public class ProfileSnapshotService {
 
         if (snapshot.recentUserAnswers().size()
                 > WINDOW_SIZE) {
-            badRequest("Too many recent user answers");
+            badRequest("Too many recent answers");
         }
 
         for (var answer : snapshot.recentUserAnswers()) {
@@ -223,12 +245,8 @@ public class ProfileSnapshotService {
     }
 
     private String level(int score) {
-        if (score < 50) {
-            return "WEAK";
-        }
-        if (score < 80) {
-            return "NORMAL";
-        }
+        if (score < 50) return "WEAK";
+        if (score < 80) return "NORMAL";
         return "MASTERED";
     }
 

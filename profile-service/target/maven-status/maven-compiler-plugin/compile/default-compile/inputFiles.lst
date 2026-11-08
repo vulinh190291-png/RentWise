@@ -2,5 +2,7 @@ C:\Users\Administrator\Desktop\projects\RentWise\项目实施\RentWise\profile-s
 C:\Users\Administrator\Desktop\projects\RentWise\项目实施\RentWise\profile-service\src\main\java\com\rentwise\profilesvc\ProfileServiceApplication.java
 C:\Users\Administrator\Desktop\projects\RentWise\项目实施\RentWise\profile-service\src\main\java\com\rentwise\profilesvc\ProfileSnapshot.java
 C:\Users\Administrator\Desktop\projects\RentWise\项目实施\RentWise\profile-service\src\main\java\com\rentwise\profilesvc\ProfileSnapshotService.java
+C:\Users\Administrator\Desktop\projects\RentWise\项目实施\RentWise\profile-service\src\main\java\com\rentwise\profilesvc\ProfileSyncCheckpoint.java
+C:\Users\Administrator\Desktop\projects\RentWise\项目实施\RentWise\profile-service\src\main\java\com\rentwise\profilesvc\ProfileSyncCheckpointRepository.java
 C:\Users\Administrator\Desktop\projects\RentWise\项目实施\RentWise\profile-service\src\main\java\com\rentwise\profilesvc\UserMastery.java
 C:\Users\Administrator\Desktop\projects\RentWise\项目实施\RentWise\profile-service\src\main\java\com\rentwise\profilesvc\UserMasteryRepository.java
