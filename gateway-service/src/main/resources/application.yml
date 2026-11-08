@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: gateway-service
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        enabled: ${NACOS_ENABLED:false}
+
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: training-api
+              uri: lb://training-service
+              predicates:
+                - Path=/api/**
+
+server:
+  port: 8080

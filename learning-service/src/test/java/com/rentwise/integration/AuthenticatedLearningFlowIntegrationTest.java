@@ -1,5 +1,7 @@
 package com.rentwise.integration;
 
+import java.util.UUID;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rentwise.user.repository.UserRepository;
@@ -64,13 +66,50 @@ class AuthenticatedLearningFlowIntegrationTest {
                 .andReturn().getResponse().getContentAsString());
         long nextCaseId = nextTraining.path("trainingCase").path("caseId").asLong();
 
-        mockMvc.perform(post("/api/training/answers")
-                        .header("Authorization", bearer(token))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"caseId\":" + nextCaseId + ",\"selectedClarify\":true}"))
+
+        String requestId = UUID.randomUUID().toString();
+
+        String answerBody = "{\"caseId\":" + nextCaseId
+                + ",\"selectedClarify\":true"
+                + ",\"requestId\":\"" + requestId + "\"}";
+
+// 第一次提交
+        String firstResponse = mockMvc.perform(
+                        post("/api/training/answers")
+                                .header("Authorization", bearer(token))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(answerBody)
+                )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.updatedMastery").exists())
-                .andExpect(jsonPath("$.data.nextTraining").exists());
+                .andExpect(jsonPath("$.data.answer.answerId").exists())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+// 使用完全相同的 requestId 再提交
+        String secondResponse = mockMvc.perform(
+                        post("/api/training/answers")
+                                .header("Authorization", bearer(token))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(answerBody)
+                )
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        long firstAnswerId = readData(firstResponse)
+                .path("answer")
+                .path("answerId")
+                .asLong();
+
+        long secondAnswerId = readData(secondResponse)
+                .path("answer")
+                .path("answerId")
+                .asLong();
+
+        assertEquals(firstAnswerId, secondAnswerId);
+
 
         JsonNode assessment = readData(mockMvc.perform(post("/api/assessment/start")
                         .header("Authorization", bearer(token)))

@@ -140,10 +140,13 @@ export interface DiagnosisCompleteResponse {
 //
 
 // 提交训练答案
+
 export interface TrainingAnswerRequest {
     caseId: number
     selectedClarify: boolean
+    requestId: string
 }
+
 
 // 后端提供的即时反馈
 export interface FeedbackView {
@@ -156,9 +159,11 @@ export interface FeedbackView {
 export interface TrainingAnswerResponse {
     answer: AnswerResult
     feedback: FeedbackView
-    updatedMastery: TopicMasteryView
-    nextTraining: NextTrainingResponse
+    updatedMastery: TopicMasteryView | null
+    nextTraining: NextTrainingResponse | null
+    syncStatus: 'SYNCED' | 'PENDING'
 }
+
 
 //
 // Assessment 阶段测评模块

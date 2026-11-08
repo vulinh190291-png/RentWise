@@ -63,7 +63,19 @@ class SecurityIntegrationTest {
         UserAccount user = userRepository.save(new UserAccount(
                 "Atopos", passwordEncoder.encode("12345678"), UserRole.LEARNER, true));
         String token = jwtService.generateToken(user);
-        String tampered = token.substring(0, token.length() - 1) + (token.endsWith("a") ? "b" : "a");
+
+        String[] parts = token.split("\\.", -1);
+
+// JWT 由 Header、Payload、Signature 三部分组成
+        String signature = parts[2];
+
+// 修改签名第一个字符，确保签名字节发生变化
+        char replacement = signature.charAt(0) == 'A' ? 'B' : 'A';
+
+        String tampered = parts[0] + "."
+                + parts[1] + "."
+                + replacement + signature.substring(1);
+
 
         mockMvc.perform(get("/api/users/me").header("Authorization", "Bearer " + tampered))
                 .andExpect(status().isUnauthorized())

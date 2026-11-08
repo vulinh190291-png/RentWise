@@ -1,3 +1,4 @@
+
 package com.rentwise.profile.sync;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -21,9 +22,15 @@ public class ProfileSyncQueue {
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
-    public void enqueue(Long userId) {
-        if (remoteEnabled) {
-            repository.save(new ProfileSyncJob(userId));
+    public Long enqueue(Long userId) {
+        if (!remoteEnabled) {
+            return null;
         }
+
+        ProfileSyncJob job = repository.save(
+                new ProfileSyncJob(userId)
+        );
+
+        return job.getId();
     }
 }

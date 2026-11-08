@@ -15,7 +15,7 @@ import type {
 } from '../../types/api'
 
 const router = useRouter()
-
+const submissionUncertain = ref(false)
 const loading = ref(true)
 const submitting = ref(false)
 const errorMessage = ref('')
@@ -26,6 +26,69 @@ const result = ref<TrainingAnswerResponse | null>(null)
 
 // 当前页面会话中完成的训练题数
 const completedCount = ref(0)
+
+const PENDING_SUBMISSION_KEY =
+    'rentwise_training_pending_submission'
+
+interface PendingSubmission {
+  requestId: string
+  caseId: number
+  selectedClarify: boolean
+}
+
+function readPendingSubmission(): PendingSubmission | null {
+  const raw = sessionStorage.getItem(PENDING_SUBMISSION_KEY)
+
+  if (!raw) return null
+
+  try {
+    const value = JSON.parse(raw) as PendingSubmission
+
+    if (
+        typeof value.requestId === 'string' &&
+        typeof value.caseId === 'number' &&
+        typeof value.selectedClarify === 'boolean'
+    ) {
+      return value
+    }
+  } catch {
+    // 忽略格式不正确的本地数据
+  }
+
+  sessionStorage.removeItem(PENDING_SUBMISSION_KEY)
+  return null
+}
+
+function getOrCreateSubmission(
+    caseId: number,
+    selectedClarify: boolean,
+): PendingSubmission {
+  const existing = readPendingSubmission()
+
+  if (existing && existing.caseId === caseId) {
+    if (existing.selectedClarify !== selectedClarify) {
+      throw new Error(
+          '本题已有未确认的提交，请使用原来的答案重试',
+      )
+    }
+
+    return existing
+  }
+
+  const submission: PendingSubmission = {
+    requestId: crypto.randomUUID(),
+    caseId,
+    selectedClarify,
+  }
+
+  sessionStorage.setItem(
+      PENDING_SUBMISSION_KEY,
+      JSON.stringify(submission),
+  )
+
+  return submission
+}
+
 
 const topicNames: Record<RiskTopic, string> = {
   DEPOSIT_RETURN: '押金返还',
@@ -60,8 +123,26 @@ async function loadTraining() {
 
   try {
     const next = await getNextTraining()
+
     recommendation.value = next
-    selectedClarify.value = null
+    result.value = null
+
+    const pending = readPendingSubmission()
+
+    if (
+        pending &&
+        pending.caseId === next.trainingCase.caseId
+    ) {
+      selectedClarify.value = pending.selectedClarify
+      submissionUncertain.value = true
+
+      errorMessage.value =
+          '检测到一笔尚未确认的提交，可以安全重试。'
+    } else {
+      selectedClarify.value = null
+      submissionUncertain.value = false
+    }
+
     result.value = null
   } catch (error) {
     errorMessage.value = getErrorMessage(error)
@@ -71,6 +152,8 @@ async function loadTraining() {
 }
 
 // 提交用户选择
+
+
 async function handleSubmit() {
   if (
       submitting.value ||
@@ -85,31 +168,69 @@ async function handleSubmit() {
   errorMessage.value = ''
 
   try {
-    result.value = await submitTrainingAnswer({
-      caseId: currentCase.value.caseId,
-      selectedClarify: selectedClarify.value,
-    })
+    const submission = getOrCreateSubmission(
+        currentCase.value.caseId,
+        selectedClarify.value,
+    )
 
+    const response = await submitTrainingAnswer(
+        submission,
+    )
+
+    result.value = response
     completedCount.value++
+    submissionUncertain.value = false
 
-    ElMessage.success('答案已提交，学习画像已更新')
+    // 已经得到明确的后端响应，
+    // 不再保留待确认请求
+    sessionStorage.removeItem(PENDING_SUBMISSION_KEY)
+
+    if (response.syncStatus === 'PENDING') {
+      ElMessage.warning(
+          '答案已保存，学习画像正在后台同步',
+      )
+    } else {
+      ElMessage.success(
+          '答案已提交，学习画像已更新',
+      )
+    }
+
   } catch (error) {
-    errorMessage.value = getErrorMessage(error)
-    ElMessage.error(errorMessage.value)
+    // 不能确定服务端是否已提交成功；
+    // 但下一次请求会使用同一个 requestId。
+    submissionUncertain.value = true
+
+    errorMessage.value =
+        '提交结果尚未确认，可使用原请求编号安全重试。'
+
+    ElMessage.warning(errorMessage.value)
+    console.error(error)
+
   } finally {
     submitting.value = false
   }
 }
 
+
 // 使用提交接口返回的下一题，不再重复请求
-function handleNext() {
+
+async function handleNext() {
   if (!result.value) return
 
-  recommendation.value = result.value.nextTraining
-  result.value = null
-  selectedClarify.value = null
-  errorMessage.value = ''
+  if (result.value.nextTraining) {
+    recommendation.value = result.value.nextTraining
+    result.value = null
+    selectedClarify.value = null
+    errorMessage.value = ''
+    submissionUncertain.value = false
+    return
+  }
+
+  // 画像同步中：尝试重新获取推荐题
+  // 如果 Profile 尚未恢复，页面会展示加载错误
+  await loadTraining()
 }
+
 
 onMounted(loadTraining)
 </script>
@@ -227,7 +348,7 @@ onMounted(loadTraining)
             <el-button
                 class="answer-option"
                 :type="selectedClarify === true ? 'primary' : 'default'"
-                :disabled="submitting || !!result"
+                :disabled="submitting || !!result || submissionUncertain"
                 @click="selectedClarify = true"
             >
               需要进一步澄清
@@ -236,12 +357,14 @@ onMounted(loadTraining)
             <el-button
                 class="answer-option"
                 :type="selectedClarify === false ? 'primary' : 'default'"
-                :disabled="submitting || !!result"
+                :disabled="submitting || !!result || submissionUncertain"
                 @click="selectedClarify = false"
             >
               不需要进一步澄清
             </el-button>
           </div>
+
+          <!-- 答题后显示反馈 -->
 
           <!-- 答题后显示反馈 -->
           <div v-if="result" class="feedback-area">
@@ -269,25 +392,40 @@ onMounted(loadTraining)
 
             <el-divider />
 
-            <h3>更新后的掌握度</h3>
+            <!-- 画像已经同步成功 -->
+            <template v-if="result.updatedMastery">
+              <h3>更新后的掌握度</h3>
 
-            <p>
-              {{ result.updatedMastery.topicName }}
-              · {{ result.updatedMastery.masteryScore }}%
-            </p>
+              <p>
+                {{ result.updatedMastery.topicName }}
+                · {{ result.updatedMastery.masteryScore }}%
+              </p>
 
-            <el-progress
-                :percentage="result.updatedMastery.masteryScore"
-                :stroke-width="12"
+              <el-progress
+                  :percentage="result.updatedMastery.masteryScore"
+                  :stroke-width="12"
+              />
+            </template>
+
+            <!-- 画像还在后台同步 -->
+            <el-alert
+                v-else
+                title="答案已保存，学习画像正在同步"
+                description="Profile 服务暂时不可用，后台将尝试恢复同步。"
+                type="warning"
+                :closable="false"
+                show-icon
             />
 
-            <p class="next-tip">
+            <p v-if="result.nextTraining" class="next-tip">
               下一题推荐：
               {{ topicNames[result.nextTraining.topic] }}
               ·
               {{ difficultyNames[result.nextTraining.difficulty] }}
             </p>
+
           </div>
+
 
           <el-alert
               v-if="errorMessage"
@@ -307,7 +445,7 @@ onMounted(loadTraining)
                 :disabled="selectedClarify === null"
                 @click="handleSubmit"
             >
-              提交答案
+              {{ submissionUncertain ? '安全重试本次提交' : '提交答案' }}
             </el-button>
 
             <template v-else>
@@ -320,7 +458,7 @@ onMounted(loadTraining)
                   size="large"
                   @click="handleNext"
               >
-                继续下一题
+                {{ result.nextTraining ? '继续下一题' : '重新获取推荐' }}
               </el-button>
             </template>
           </div>
