@@ -1,3 +1,4 @@
+> Document version: v0.1
 > Status: Draft
 > Implementation: Not started
 > Baseline: Living Picks proposal v0.1
@@ -258,3 +259,7 @@ Living Picks 适合进入 RentWise，但应作为 Explore 旗下的“场景化�
 文档性质声明：本文件用于记录创意与提出可执行方案。除了用户明确提出的“多个房间氛围场景 + 点击物品进入购买页面”和既定 Apple-inspired 风格外，其余包括命名、栏目位置、实现步骤、规模与数据结构均为设计建议，尚待确认。文中示例不代表已实现功能、真实商品、已取得图片许可或确定的商业合作。
 
 [Explore](overview.md) · [导航](../../README.md)
+
+## 原稿归档位置
+
+来源原件现归档在项目总目录 `01_产品资料/产品构想/`，文件名不变，内容未经修改。此路径为本地资料定位说明；仓库 Markdown 为后续维护主稿。

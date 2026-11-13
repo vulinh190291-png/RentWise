@@ -1,5 +1,6 @@
 # 外部资料待导入清单
 
+> Document version: v1.0
 > Status: Draft
 > Implementation: Not applicable
 > Baseline: v0.4 / 25e67be3b43dc2dae35af57bd0da94acd86ecec9
@@ -19,6 +20,10 @@
 
 已存在但暂不导入：工作目录的教育场景需求、调研笔记、选题报告、MVP 清单 Word；Explore 说明 Word；用户故事地图与两张用户原型图。逐项文件名见[治理报告](governance-report.md)。不能仅据名称认定重复或已过期。
 
-已导入 Explore Markdown 与 Living Picks DOCX 正文，原件保留。源码 ZIP 和旧 README 备份继续原位保留，不作为新资料自动导入。
+已导入 Explore Markdown 与 Living Picks DOCX 正文，原件内容保留，位置按本地资料库归档。源码 ZIP 和旧 README 备份已分类移动，不作为新资料自动导入。
 
 [导航](README.md)
+
+## 本地资料库位置更新
+
+2026-11-13：已按实际内容整理 13 个文件，详见[资料库清单](local-library.md)。课程用途已分类，但课程交付批次、内容版本与批准状态仍需区分；未将早期课程要求认定为当前需求。UI/UX 与 v1.0 原稿在授权目录中仍缺失。

@@ -1,5 +1,6 @@
 # 当前 v0.4 API 说明
 
+> Document version: v1.0
 > Status: Draft
 > Implementation: Partial
 > Baseline: v0.4 / 25e67be3b43dc2dae35af57bd0da94acd86ecec9

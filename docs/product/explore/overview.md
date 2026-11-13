@@ -1,3 +1,4 @@
+> Document version: v0.1
 > Status: Draft
 > Implementation: Not started
 > Baseline: Explore proposal v0.1
@@ -219,3 +220,7 @@ RentWise
 
 
 [Living Picks](living-picks.md) · [导航](../../README.md)
+
+## 原稿归档位置
+
+来源原件现归档在项目总目录 `01_产品资料/产品构想/`，文件名不变，内容未经修改。此路径为本地资料定位说明；仓库 Markdown 为后续维护主稿。

@@ -1,5 +1,6 @@
 # 文档治理与迁移验收报告
 
+> Document version: v1.0
 > Status: Draft
 > Implementation: Not applicable
 > Baseline: v0.4 / 25e67be3b43dc2dae35af57bd0da94acd86ecec9
@@ -92,3 +93,19 @@
 - 未运行 Maven/npm 或 HTTP 联调；外部 URL 未联网验证，不以文档检查替代运行验收。
 
 最终验证：93 个本地 Markdown 链接/图片引用存在且大小写匹配；未发现需要单独核验的本地锚点引用。git diff --check 通过（仅涵盖跟踪差异），8 个未跟踪文件另行完成上述静态检查。本轮前后 SHA-256 对比仅上述五份必要修正文档发生变化；业务代码、配置及其他未提交文档保持原样。
+
+## 本地资料库最终整理（2026-11-13）
+
+本节是最新状态，此前“原位保留”“未提交”等表述保留为各轮历史记录。
+
+- 审计时旧 chore/docs-governance 分支干净，提交 36228f7；GitHub PR #8 已合并到 feat/v0.4-microservices，合并提交 52212db31073c6facc15549c0610ecd567986bf0。
+- 初次 fetch 的 Windows schannel 凭据后端失败；使用单次 http.sslBackend=openssl 后成功，无全局配置改动。开发分支仅 fast-forward，同步后创建 chore/docs-library-finalization；未改 main、未改写历史、未重复创建 PR。
+- 13 个外部文件按内容分类移动，原路径/目标与分类理由见[本地资料库](local-library.md)。目标不存在才移动，13 个 SHA-256 全部保持；未解包/重打包 ZIP。总目录新增 00_资料目录.md 与资料迁移校验清单_2026-11-13.json，未创建外层 Git 仓库。
+- 三张 PNG 与仓库历史图完全相同，保留两份，不删除、不增加 Git 图片。Word 与 Markdown 不视为逐字节重复。历史 README、治理指导书归历史文档。
+- 本轮 Git 新增 docs/local-library.md；修改 AGENTS.md、docs/README.md、docs/external-imports.md、docs/architecture/current/v0.4.md、docs/engineering/api-v0.4.md、docs/governance-report.md、两份 Explore/Living Picks Markdown：补充文档版本、资料来源位置、维护规则和最新治理状态。
+- 未导入课程/研究 Word、ZIP、原型副本：分别属于本地原稿、交付快照或已有重复历史资源。未确认早期材料为当前 Approved 需求，不额外制造需求文档。
+- UI/UX 独立规范与 v1.0 目标架构/API/DB 原稿仍缺失。后续由用户提供可信原稿、确认课程交付批次及素材对外授权；推送/PR 需另行授权。
+- 本轮仅文档和外部文件路径整理，不执行业务测试；既有架构/API 仍以源码静态核验为准，不升级为运行 Verified。
+- 允许检查通过后创建本地 Commit；本报告随该提交保存，提交 SHA 以 Git 日志与最终交付回复为准（避免在提交内部自引用 SHA）。未推送、未创建或合并 PR。
+
+最终验收：13 个移动文件 SHA-256 一致；114 个仓库及本地索引链接/图片路径存在且大小写匹配；本轮仅 9 个 Markdown 文件变更，无二进制导入。新增内容检查未发现常见密钥模式，未修改代码或配置。历史文档 docs/versions/v0.1/implementation.md, docs/versions/v0.2/auth-security-implementation.md 含既有 Unicode 替代字符，已确认与 HEAD 一致，未猜测修复；后续需可信原稿核对。外部 URL 未逐项联网验证。diff --check 与 cached --check 通过后创建本地提交。

@@ -1,5 +1,6 @@
 # RentWise 维护规则
 
+> Document version: v1.0
 > Status: Draft
 > Implementation: Not applicable
 > Baseline: v0.4 文档治理规则 v1.0
