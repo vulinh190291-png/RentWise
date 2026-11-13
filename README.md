@@ -1,3 +1,5 @@
+[文档索引](docs/README.md) · [治理报告](docs/governance-report.md)
+
 # RentWise
 
 > 租房合同风险识别与自适应训练平台｜初代源码交付版本（v0.4 微服务改造阶段）

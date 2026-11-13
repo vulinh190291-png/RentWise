@@ -1,3 +1,12 @@
+> Status: Archived
+> Implementation: Not applicable
+> Baseline: v0.3
+> Owner: TBD
+> Updated: 2026-11-13
+> Source: 原路径历史文档
+
+> Historical：以下为 v0.3 原文，不代表当前实现。参见[当前 v0.4 API](engineering/api-v0.4.md)及[当前架构](architecture/current/v0.4.md)。
+
 # RentWise v0.3 API
 
 所有接口返回统一结构：
