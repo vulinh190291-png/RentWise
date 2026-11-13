@@ -1,3 +1,12 @@
+> Status: Archived
+> Implementation: Not applicable
+> Baseline: v0.1
+> Owner: TBD
+> Updated: 2026-11-13
+> Source: 原路径历史文档
+
+> Historical：以下为 v0.1 原文，不代表当前实现。参见[当前架构](../architecture/current/v0.4.md)。
+
 # RentWise v0.1 MVP 范围
 
 ## 核心用户目标
