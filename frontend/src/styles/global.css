@@ -1,0 +1,19 @@
+@import './tokens.css';
+html { font-family:var(--rw-font); color:var(--rw-ink); background:var(--rw-bg); color-scheme:light; }
+body { margin:0; }
+*, *::before, *::after { box-sizing:border-box; }
+button,input { font:inherit; }
+button,a,input { -webkit-tap-highlight-color:transparent; }
+:focus-visible { outline:3px solid var(--rw-focus); outline-offset:4px; }
+.rw-auth { --el-color-primary:#272725; --el-color-primary-light-3:#55554f; --el-color-primary-light-5:#777771; --el-color-primary-light-7:#aaa9a3; --el-color-primary-light-8:#cfcec9; --el-color-primary-light-9:#efefeb; --el-color-primary-dark-2:#090909; --el-border-radius-base:8px; --el-font-family:var(--rw-font); }
+.rw-auth a { color:inherit; text-underline-offset:5px; }
+.rw-auth .el-input__wrapper { min-height:48px; }
+.rw-auth .el-button { min-height:48px; }
+.rw-auth .el-form-item__label { color:var(--rw-ink); }
+.rw-auth .el-form-item { margin-bottom:24px; }
+.rw-container { width:min(1240px,calc(100% - 80px)); margin-inline:auto; }
+.rw-kicker { font-size:11px; letter-spacing:.16em; text-transform:uppercase; font-weight:600; }
+.rw-button { border:1px solid var(--rw-line); border-radius:999px; padding:12px 20px; background:var(--rw-surface); color:var(--rw-ink); cursor:pointer; transition:background var(--rw-fast); }
+.rw-button:hover { background:#eeede8; }
+@media(max-width:767px) { .rw-container { width:calc(100% - 32px); } }
+@media(prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto!important; animation-duration:.01ms!important; transition-duration:.01ms!important; } }

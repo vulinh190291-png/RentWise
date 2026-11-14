@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Training from '../views/training/Training.vue'
-import Login from '../views/auth/Login.vue'
-import Register from '../views/auth/Register.vue'
-import Dashboard from '../views/dashboard/Dashboard.vue'
-import Diagnosis from '../views/diagnosis/Diagnosis.vue'
-import Results from '../views/results/Results.vue'
-import Assessment from '../views/assessment/Assessment.vue'
+const Training = () => import('../views/training/Training.vue')
+const Login = () => import('../views/auth/Login.vue')
+const Register = () => import('../views/auth/Register.vue')
+const Dashboard = () => import('../views/dashboard/Dashboard.vue')
+const Diagnosis = () => import('../views/diagnosis/Diagnosis.vue')
+const Results = () => import('../views/results/Results.vue')
+const Assessment = () => import('../views/assessment/Assessment.vue')
 
 const router = createRouter({
     history: createWebHistory(),

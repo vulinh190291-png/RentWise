@@ -35,3 +35,7 @@
 [故事地图](assets/user-story-map.png) · [流程原型](assets/wireframe-flow.png) · [主界面原型](assets/wireframe-main.png)。仅供追溯，不作为新 UI 基准；来源与授权待核对。
 
 完整[外部资料待导入清单](external-imports.md)记录缺失原稿、目标路径与导入条件。
+
+## UI 0.1 前端实施
+
+[批准的首轮规格](design/RentWise_UI_0.1_首页与设计系统_Codex开发规格_v0.1.md) · [实施与验收](design/ui-0.1-validation.md) · [素材来源](design/assets-attribution.md)。当前前端已实现静态交互，摄影与真实后端联调待完成；完整 UI/UX v1.0 原稿仍缺失。
