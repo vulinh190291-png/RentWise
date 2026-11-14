@@ -1,7 +1,7 @@
-# Explore 0.1 前端实施与验收
+# Explore 0.1 城市目录与详情验收（尚未接入真实地图）
 
-> Document version: 0.1
-> Status: Draft（待用户视觉及内容评审）
+> Document version: 0.2
+> Status: Approved（城市目录与详情通过用户阶段性视觉评审；不涵盖真实地图或完整内容审定）
 > Implementation: Partial（城市列表与详情；地图未接入）
 > Project version: v0.4 / Explore 0.1
 > Baseline: ffc2bd09c0afba08cb59d10ed2873b2466b6eb5a
@@ -59,6 +59,6 @@ GitHub 已确认 PR #11 merged；fetch 后首页精修提交 8a71249 是远程�
 
 修改：`frontend/src/router/index.ts`（新增公开路由）、`frontend/src/views/auth/Login.vue`（导航入口及手机显示）、`frontend/src/views/dashboard/Dashboard.vue`（入口）、`docs/README.md`、`docs/product/explore/overview.md`（保留原稿，增加实施状态）。
 
-本轮仅允许本地提交；未推送、未创建 PR。提交 SHA 见 Git 日志及本轮交付。
+2026-11-14：用户确认城市目录与详情版本通过阶段性视觉评审，并授权推送 `feat/explore-city-map`、创建以 `feat/v0.4-microservices` 为目标的 PR，暂不合并。PR 范围保持上述 13 个文件。真实地图接入、城市节点与详情联动留待 Explore 0.2 独立迭代，不列入本轮完成清单。地图技术评估、服务授权及部署待办继续保留。
 
 [导航](../README.md) · [内容来源](../product/explore/city-sources.md) · [实施计划](../engineering/explore-0.1-plan.md)
