@@ -3,7 +3,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-import { getMyProfile } from '../../api/profile'
+import { getMyProfile, ProfileNotInitializedError } from '../../api/profile'
 import { getNextTraining } from '../../api/plan'
 
 import type {
@@ -19,6 +19,7 @@ const loading = ref(true)
 const profile = ref<UserProfileResponse | null>(null)
 const recommendation = ref<NextTrainingResponse | null>(null)
 const errorMessage = ref('')
+const profileNotInitialized = ref(false)
 const recommendationError = ref('')
 
 const topicNames: Record<RiskTopic, string> = {
@@ -89,6 +90,7 @@ const averageMastery = computed(() => {
 async function loadResults() {
     loading.value = true
     errorMessage.value = ''
+    profileNotInitialized.value = false
     recommendationError.value = ''
     profile.value = null
     recommendation.value = null
@@ -96,6 +98,7 @@ async function loadResults() {
     try {
         profile.value = await getMyProfile()
     } catch (error) {
+        profileNotInitialized.value = error instanceof ProfileNotInitializedError
         errorMessage.value = getErrorMessage(error)
         loading.value = false
         return
@@ -138,15 +141,15 @@ onMounted(loadResults)
 <!-- 画像加载失败 -->
 <el-card v-else-if="errorMessage" shadow="never">
     <el-alert
-title="学习画像加载失败"
+:title="profileNotInitialized ? '尚无学习画像' : '学习画像加载失败'"
 :description="errorMessage"
-type="warning"
+:type="profileNotInitialized ? 'info' : 'warning'"
 :closable="false"
 show-icon
 />
 
 <div class="actions">
-    <el-button type="primary" @click="router.push('/diagnosis')">
+    <el-button v-if="profileNotInitialized" type="primary" @click="router.push('/diagnosis')">
     前往学习诊断
     </el-button>
 

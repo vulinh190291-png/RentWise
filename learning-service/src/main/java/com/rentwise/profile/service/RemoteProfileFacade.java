@@ -67,6 +67,14 @@ public class RemoteProfileFacade implements ProfileFacade {
                     .get()
                     .uri("/internal/profiles/{userId}", userId)
                     .retrieve()
+                    // A missing profile is a business precondition, not an upstream outage.
+                    // Keep this mapping scoped to GET; synchronization failures remain 502.
+                    .onStatus(status -> status.value() == 404, (request, response) -> {
+                        throw new DomainException(
+                                HttpStatus.NOT_FOUND,
+                                "Profile not initialized for user " + userId
+                        );
+                    })
                     .body(UserProfileResponse.class);
 
             return requireBody(result);

@@ -2,19 +2,19 @@
 
 > Status: Draft
 > Implementation: Partial
-> Baseline: v0.4 / 25e67be3b43dc2dae35af57bd0da94acd86ecec9
+> Baseline: v0.4 / 52212db；画像状态修复见 fix/profile-not-initialized
 > Owner: TBD
-> Updated: 2026-11-13
-> Source: 当前 Controller、DTO、SecurityConfig 与服务源码；静态核验，未运行接口
+> Updated: 2026-11-14
+> Source: 当前 Controller、DTO、SecurityConfig 与服务源码；本轮真实调用与测试见画像回归报告
 
 ## 状态与访问入口
-下列 14 个接口均有当前源码实现；运行验证均为 **Unverified（本轮未调用）**，不表示接口尚未编码。文档为 Draft，不能作为已通过联调的契约。目标 v1.0 四服务 API 不在本说明范围内。
+下列 14 个接口均有当前源码实现。2026-11-14 的专用测试账户已完成下列 11 个业务接口的正常学习闭环与画像未初始化状态验证；不代表所有异常、并发和故障恢复均通过验收。内部接口直接验证范围和证据见[画像回归报告](profile-502-investigation.md)，其余场景仍为 Unverified。目标 v1.0 四服务 API 不在本说明范围内。
 
 业务入口默认 Gateway `http://localhost:8080`，路由 `/api/**` 到 Learning（默认 8082，注册名 training-service）；需实际启用 Nacos 并有健康实例。内部路径不匹配现有 Gateway 路由，按服务地址调用。Swagger `/swagger-ui.html` 和 `/v3/api-docs` 在 Learning 开放，当前 Gateway 未为其配置路由。
 
 业务请求/响应使用 JSON。除 POST 注册、登录外，`/api/**` 需 `Authorization: Bearer <token>`；用户身份来自 JWT，不由客户端传 userId。内部接口使用 `X-Internal-Key`，不使用普通用户 JWT 作为内部凭证。
 
-## 业务接口（11 个，源码已实现 / 运行 Unverified）
+## 业务接口（11 个，源码已实现 / 正常闭环已验证）
 成功响应统一为 `ApiResponse<T>`：`{ "success": true, "data": T, "message": "OK" }`。表中类型指 data，未指定请求体的接口无需 JSON 请求体。
 
 | 方法与路径 | 请求体 | 响应 data |
@@ -40,7 +40,7 @@ RegisterRequest 的 username 非空且长度 3–32，password 非空且长度 8
 ```
 TrainingAnswerResponse 新增 syncStatus：`SYNCED` 表示同步及推荐流程正常返回；捕获画像相关 502/504 DomainException 时返回 `PENDING`，updatedMastery 和 nextTraining 为 null，答案与反馈仍返回。不能把 HTTP 成功等同于画像同步完成。请求去重实现见 TrainingAnswerPersistenceService；重试效果、并发与故障恢复待运行验证。
 
-## 内部接口（3 个，源码已实现 / 运行 Unverified）
+## 内部接口（3 个，源码已实现 / 部分运行验证）
 内部成功响应直接返回对象，**不包装 ApiResponse**。缺失或错误的 X-Internal-Key 在 Controller 抛出 401；内部错误体不可假定为业务统一包装。
 
 | 服务、方法与路径 | 请求体 | 直接响应 |
@@ -54,7 +54,17 @@ ProfileSnapshot = `{snapshotVersion: long, topics: TopicFacts[], recentUserAnswe
 ## 错误与验证边界
 Learning 的 GlobalExceptionHandler 将 DTO 校验失败映射到 400，将 DomainException 映射到其 status，响应为 `{success:false,data:null,message:...}`。SecurityConfig 配置认证/授权处理器；未认证和权限不足分别由其处理，不能推断所有框架异常、Gateway 错误和内部错误都有相同结构。
 
-现有集成测试可作为复验入口，但 test 配置关闭 remote-enabled，因此本地模式测试不证明 Profile HTTP、Nacos 或 Gateway 联调通过。本轮未运行 Maven、启动服务或发起 HTTP 请求。
+### 尚无学习画像
+
+GET `/api/profile/me` 在当前 Profile 服务返回未初始化 404 时，Learning 保留 404 并返回：
+
+```json
+{"success":false,"data":null,"message":"Profile not initialized for user 9"}
+```
+
+userId 来自认证身份，示例 9 为专用测试账户；这不是带有默认分数的成功画像。前端以该读取接口的 404 显示“尚无学习画像”并引导诊断。真实完成诊断后，该接口恢复 200 和 UserProfileResponse。上游连接失败、401/403/409/500/503 及同步 POST 的 404 仍按既有逻辑返回 502，不被此规则掩盖。当前 Profile 的 404 也包含不足五条主题记录的情况；本轮没有细分部分数据缺失。
+
+现有 test 配置关闭 remote-enabled，所以本地模式集成测试本身不证明远程联调；新增 RemoteProfileFacadeTest 用模拟上游检查远程错误转换及 Controller HTTP 响应。独立的真实回归通过运行中的 Gateway、Learning 和 Profile 完成画像 404→200 与学习闭环，见[报告与测试方式](profile-502-investigation.md)。
 
 ## DTO 字段与源码依据
 以下为当前 Java record 声明摘录，保留字段类型及校验注解；不是目标接口设计。
