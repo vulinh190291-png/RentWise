@@ -1,0 +1,210 @@
+{
+  "version": "0.1",
+  "cities": [
+    {
+      "id": "beijing",
+      "name": "北京",
+      "pinyin": "Beijing",
+      "tag": "院落与胡同",
+      "geography": "华北平原北部，西北侧为山地。",
+      "climate": "暖温带季风气候，季节差异明显。",
+      "culture": "胡同中的四合院，是认识北京传统居住空间的一条线索。",
+      "housingTitle": "传统四合院",
+      "housing": "房屋围绕庭院布置。这里讨论的是历史民居样本，并非北京当代住宅的统一形态。",
+      "risk": "观察窗缝与保温条件；问清供暖方式、收费及维修责任。",
+      "sources": [
+        {
+          "title": "北京市政府 · 北京概况",
+          "url": "https://www.beijing.gov.cn/renwen/zt/",
+          "checkedAt": "2026-11-14"
+        },
+        {
+          "title": "北京市文物局 · 北京的四合院",
+          "url": "https://wwj.beijing.gov.cn/bjww/resource/cms/article/bjww_362762/10837017/2020073115111634980.pdf",
+          "checkedAt": "2026-11-14"
+        }
+      ],
+      "updatedAt": "2026-11-14"
+    },
+    {
+      "id": "shanghai",
+      "name": "上海",
+      "pinyin": "Shanghai",
+      "tag": "里弄与天井",
+      "geography": "地处长江三角洲前缘。",
+      "climate": "北亚热带季风性气候，四季分明。",
+      "culture": "石库门里弄提供了观察上海历史居住空间的切口。",
+      "housingTitle": "石库门里弄住宅",
+      "housing": "天井、客堂与厢房沿纵深组织，布局紧凑。历史建筑样本不代表当前所有租住房屋。",
+      "risk": "现场检查通风、墙角渗水与共用设施；把维修分工写进约定。",
+      "sources": [
+        {
+          "title": "上海市政府 · 主体功能区规划（自然地理）",
+          "url": "https://www.shanghai.gov.cn/nw31011/20200820/0001-31011_34545.html",
+          "checkedAt": "2026-11-14"
+        },
+        {
+          "title": "上海市政府 · 石库门里弄建筑营造技艺",
+          "url": "https://www.shanghai.gov.cn/huangpu/index.html",
+          "checkedAt": "2026-11-14"
+        }
+      ],
+      "updatedAt": "2026-11-14"
+    },
+    {
+      "id": "guangzhou",
+      "name": "广州",
+      "pinyin": "Guangzhou",
+      "tag": "骑楼与街巷",
+      "geography": "位于珠江三角洲，地势由东北向西南降低。",
+      "climate": "亚热带季风气候，暖湿多雨。",
+      "culture": "西关恩宁路的骑楼街，是近代商贸与市井文化的观察样本。",
+      "housingTitle": "沿街骑楼",
+      "housing": "底层沿街退让，为行人留出通行空间；部分历史案例兼有商住用途。不是在售或出租房源。",
+      "risk": "观察雨后门窗与墙面；实测临街噪声，确认排水和设备维修安排。",
+      "sources": [
+        {
+          "title": "中国天气网 · 广州城市介绍（仅采用定性地理气候）",
+          "url": "https://www.weather.com.cn/cityintro/101280101.shtml",
+          "checkedAt": "2026-11-14"
+        },
+        {
+          "title": "广州规划和自然资源局 · 恩宁路保护利用",
+          "url": "https://ghzyj.gz.gov.cn/sjb/yw/mcbh/content/post_9824299.html",
+          "checkedAt": "2026-11-14"
+        },
+        {
+          "title": "广州建设工程术语标准 · 骑楼定义",
+          "url": "https://ghzyj.gz.gov.cn/gzlpc/ywpd_chgl_chglxx/201509/b12712c5c3a64554858fd1dc8688bd21/files/4dc3f4c4f1c646c3b0e876dff9830719.pdf",
+          "checkedAt": "2026-11-14"
+        }
+      ],
+      "updatedAt": "2026-11-14"
+    },
+    {
+      "id": "suzhou",
+      "name": "苏州",
+      "pinyin": "Suzhou",
+      "tag": "园林与日常",
+      "geography": "位于长江下游、太湖之滨，河湖密布。",
+      "climate": "亚热带季风气候，四季分明。",
+      "culture": "古典园林呈现了将自然景观融入有限空间的历史文化。",
+      "housingTitle": "历史私家园林",
+      "housing": "以庭园空间组织景观与生活。它是特定历史样本，不等同于普通现代公寓的居住条件。",
+      "risk": "看清采光、通风与共用空间边界；确认潮湿或渗漏问题由谁处理。",
+      "sources": [
+        {
+          "title": "中国天气网 · 苏州城市介绍（仅采用定性地理气候）",
+          "url": "https://www.weather.com.cn/cityintro/101190401.shtml",
+          "checkedAt": "2026-11-14"
+        },
+        {
+          "title": "UNESCO · 苏州古典园林",
+          "url": "https://whc.unesco.org/en/list/813/",
+          "checkedAt": "2026-11-14"
+        }
+      ],
+      "updatedAt": "2026-11-14"
+    },
+    {
+      "id": "xiamen",
+      "name": "厦门",
+      "pinyin": "Xiamen",
+      "tag": "海岛与街区",
+      "geography": "中国东南沿海城市；本例聚焦鼓浪屿历史聚落。",
+      "climate": "南亚热带季风气候，具有海洋性特征。",
+      "culture": "鼓浪屿的历史建筑体现了本地与多种外来建筑文化的交流。",
+      "housingTitle": "鼓浪屿历史住宅",
+      "housing": "聚落中的住宅、园林与道路共同构成生活空间。案例仅描述历史风貌，不提供当前房源信息。",
+      "risk": "检查门窗密封及雨水痕迹；实际体验通勤，明确设备损坏的处理约定。",
+      "sources": [
+        {
+          "title": "中国天气网 · 厦门城市介绍（仅采用定性地理气候）",
+          "url": "https://www.weather.com.cn/cityintro/101230201.shtml",
+          "checkedAt": "2026-11-14"
+        },
+        {
+          "title": "UNESCO · 鼓浪屿历史国际社区",
+          "url": "https://whc.unesco.org/en/list/1541/",
+          "checkedAt": "2026-11-14"
+        }
+      ],
+      "updatedAt": "2026-11-14"
+    },
+    {
+      "id": "lijiang",
+      "name": "丽江",
+      "pinyin": "Lijiang",
+      "tag": "水系与古城",
+      "geography": "位于云南西北部，山地与高原地形交错。",
+      "climate": "干湿季分明，早晚温差与垂直气候差异值得留意。",
+      "culture": "古城建筑呈现多种文化的交融，并与水系和地形相适应。",
+      "housingTitle": "丽江古城民居",
+      "housing": "历史聚落因地形组织街巷，水道融入城镇空间。古城样本不能概括整个丽江市的住宅。",
+      "risk": "实测夜间噪声、热水与室温；确认短住宣传和实际租赁条款是否一致。",
+      "sources": [
+        {
+          "title": "中国天气网 · 丽江城市介绍（仅采用定性地理气候）",
+          "url": "https://www.weather.com.cn/cityintro/101291401.shtml",
+          "checkedAt": "2026-11-14"
+        },
+        {
+          "title": "UNESCO · 丽江古城",
+          "url": "https://whc.unesco.org/en/list/811/",
+          "checkedAt": "2026-11-14"
+        }
+      ],
+      "updatedAt": "2026-11-14"
+    },
+    {
+      "id": "huangshan",
+      "name": "黄山",
+      "pinyin": "Huangshan",
+      "tag": "村落与水系",
+      "geography": "位于安徽南部；住宅案例来自黟县西递、宏村。",
+      "climate": "湿润性季风气候，温和多雨。",
+      "culture": "西递、宏村保留了传统村落的街巷、建筑和水系关系。",
+      "housingTitle": "皖南传统民居",
+      "housing": "建筑布局、装饰与供水系统共同构成聚落。这里展示乡村历史样本，不将其混同于黄山市区现代住宅。",
+      "risk": "确认房屋设施、消防通道和维修联系人；不要仅凭外观判断实际居住状况。",
+      "sources": [
+        {
+          "title": "中国天气网 · 黄山市城市介绍（仅采用定性地理气候）",
+          "url": "https://www.weather.com.cn/cityintro/101221001.shtml",
+          "checkedAt": "2026-11-14"
+        },
+        {
+          "title": "UNESCO · 皖南古村落西递、宏村",
+          "url": "https://whc.unesco.org/en/list/1002/",
+          "checkedAt": "2026-11-14"
+        }
+      ],
+      "updatedAt": "2026-11-14"
+    },
+    {
+      "id": "harbin",
+      "name": "哈尔滨",
+      "pinyin": "Harbin",
+      "tag": "立面与院落",
+      "geography": "位于黑龙江省西南部；本例关注道外历史街区。",
+      "climate": "中温带大陆性季风气候，冬季较长。",
+      "culture": "中华巴洛克街区将西式立面装饰与中国传统院落空间结合。",
+      "housingTitle": "道外历史院落",
+      "housing": "沿街立面与背后院落形成不同的空间体验。案例来自历史街区，不代表全市现代住宅。",
+      "risk": "试查门窗保温与供暖设备；明确供暖费用和故障维修责任。",
+      "sources": [
+        {
+          "title": "中国天气网 · 哈尔滨城市介绍（仅采用定性地理气候）",
+          "url": "https://www.weather.com.cn/cityintro/101050101.shtml",
+          "checkedAt": "2026-11-14"
+        },
+        {
+          "title": "黑龙江省文化和旅游厅 · 中华巴洛克街区",
+          "url": "https://wlt.hlj.gov.cn/wlt/c114169/202404/c00_31731149.shtml",
+          "checkedAt": "2026-11-14"
+        }
+      ],
+      "updatedAt": "2026-11-14"
+    }
+  ]
+}

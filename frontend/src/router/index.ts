@@ -11,6 +11,11 @@ const router = createRouter({
     history: createWebHistory(),
     routes: [
         {
+            path: '/explore',
+            name: 'explore',
+            component: () => import('../views/explore/Explore.vue'),
+        },
+        {
             path: '/',
             redirect: '/dashboard',
         },
