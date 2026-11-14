@@ -31,6 +31,10 @@
 - F07 情境模拟、F08 决策复盘、F09 学习路径是规划，不是已实现声明。
 - 课程 Word、交付 ZIP 和外部图片保留原位，见报告；不创建空目录或占位 PRD。
 
+## UI 0.1 前端实施
+
+[批准的首轮规格](design/RentWise_UI_0.1_首页与设计系统_Codex开发规格_v0.1.md) · [实施与验收](design/ui-0.1-validation.md) · [素材来源](design/assets-attribution.md)。首页与设计系统、真实认证链路及诊断初始化已验收；摄影仍为占位，完整 UI/UX v1.0 原稿仍缺失。画像状态修复与学习闭环补充验收由独立 Fix PR 交付。
+
 ## 历史图表
 [故事地图](assets/user-story-map.png) · [流程原型](assets/wireframe-flow.png) · [主界面原型](assets/wireframe-main.png)。仅供追溯，不作为新 UI 基准；来源与授权待核对。
 

@@ -1,0 +1,9 @@
+/* RentWise UI 0.1 — shared primitives; light theme by design. */
+:root {
+ --rw-bg:#f5f5f7; --rw-surface:#fff; --rw-ink:#1d1d1f; --rw-muted:#656560;
+ --rw-line:#deded9; --rw-sand:#e5ddd0; --rw-focus:#365f8c;
+ --rw-space-1:8px; --rw-space-2:16px; --rw-space-3:24px; --rw-space-4:32px;
+ --rw-radius-sm:8px; --rw-radius:16px; --rw-radius-lg:24px;
+ --rw-shadow:0 20px 64px #27231b0a; --rw-fast:180ms; --rw-slow:320ms;
+ --rw-font:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+}

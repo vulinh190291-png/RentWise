@@ -41,10 +41,11 @@ const rules: FormRules = {
 }
 
 async function handleRegister() {
-  if (!formRef.value) return
+  if (!formRef.value || loading.value) return
+  loading.value = true
 
   const valid = await formRef.value.validate().catch(() => false)
-  if (!valid) return
+  if (!valid) { loading.value = false; return }
 
   loading.value = true
 
@@ -69,12 +70,12 @@ async function handleRegister() {
 </script>
 
 <template>
-  <div class="register-page">
+  <div class="register-page rw-auth">
     <div class="register-card">
       <div class="brand">
         <div class="brand-icon">R</div>
         <h1>RentWise</h1>
-        <p>Personalized Learning Platform</p>
+        <p>认识居住，也认识自己的选择。</p>
       </div>
 
       <div class="form-title">
@@ -86,20 +87,24 @@ async function handleRegister() {
           ref="formRef"
           :model="form"
           :rules="rules"
-          @keyup.enter="handleRegister"
+          label-position="top"
+          :disabled="loading"
+          @submit.prevent="handleRegister"
       >
-        <el-form-item prop="username">
+        <el-form-item label="用户名" prop="username">
           <el-input
               v-model="form.username"
+              autocomplete="username"
               placeholder="请输入用户名（3～32 位）"
               size="large"
               :prefix-icon="User"
           />
         </el-form-item>
 
-        <el-form-item prop="password">
+        <el-form-item label="密码" prop="password">
           <el-input
               v-model="form.password"
+              autocomplete="new-password"
               type="password"
               placeholder="请输入密码（8～64 位）"
               size="large"
@@ -108,9 +113,10 @@ async function handleRegister() {
           />
         </el-form-item>
 
-        <el-form-item prop="confirmPassword">
+        <el-form-item label="确认密码" prop="confirmPassword">
           <el-input
               v-model="form.confirmPassword"
+              autocomplete="new-password"
               type="password"
               placeholder="请再次输入密码"
               size="large"
@@ -124,7 +130,8 @@ async function handleRegister() {
             size="large"
             class="register-button"
             :loading="loading"
-            @click="handleRegister"
+            native-type="submit"
+            :disabled="loading"
         >
           创 建 账 户
         </el-button>
@@ -137,7 +144,7 @@ async function handleRegister() {
     </div>
 
     <div class="footer">
-      RentWise · Learn Smarter, Grow Better
+      RentWise · 租房风险识别教育
     </div>
   </div>
 </template>
@@ -150,7 +157,7 @@ async function handleRegister() {
   justify-content: center;
   align-items: center;
   padding: 24px;
-  background: #f4f7fb;
+  background: var(--rw-bg);
 }
 
 .register-card {
@@ -174,7 +181,7 @@ async function handleRegister() {
   display: grid;
   place-items: center;
   border-radius: 14px;
-  background: #2563eb;
+  background: var(--rw-ink);
   color: white;
   font-size: 25px;
   font-weight: 700;
@@ -182,13 +189,13 @@ async function handleRegister() {
 
 .brand h1 {
   margin: 0;
-  color: #1e293b;
+  color: var(--rw-ink);
   font-size: 25px;
 }
 
 .brand p {
   margin-top: 7px;
-  color: #94a3b8;
+  color: var(--rw-muted);
   font-size: 12px;
 }
 
@@ -198,13 +205,13 @@ async function handleRegister() {
 
 .form-title h2 {
   margin: 0 0 8px;
-  color: #1e293b;
+  color: var(--rw-ink);
   font-size: 23px;
 }
 
 .form-title p {
   margin: 0;
-  color: #94a3b8;
+  color: var(--rw-muted);
   font-size: 14px;
 }
 
@@ -221,13 +228,13 @@ async function handleRegister() {
 }
 
 .login-link a {
-  color: #2563eb;
+  color: var(--rw-ink);
   text-decoration: none;
 }
 
 .footer {
   margin-top: 28px;
-  color: #94a3b8;
+  color: var(--rw-muted);
   font-size: 12px;
 }
 </style>
