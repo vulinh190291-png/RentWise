@@ -74,7 +74,7 @@ try {
  await page.goto(base+'/login');await page.waitForURL('**/dashboard')
  await page.evaluate(()=>sessionStorage.clear())
  await page.goto(base+'/diagnosis');await page.waitForURL('**/login')
- await page.route('**/images/housing-placeholder.svg',route=>route.abort())
+ await page.route('**/images/housing-*.webp',route=>route.abort())
  await page.reload();await page.getByText('图片暂不可用 · 仍可阅读科普').waitFor()
  assert.deepEqual(errors,[])
  console.log('PASS: 4 viewports, carousel, form persistence, dialog focus/Escape, reduced motion, validation, duplicate prevention, mocked auth/register, guards, image fallback; no runtime errors.')
