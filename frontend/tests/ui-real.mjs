@@ -69,6 +69,6 @@ try {
  await page.locator('#username').fill(username);await page.locator('#password').fill(password)
  await page.getByRole('button',{name:'登录，继续学习'}).click();await page.locator('.login-error').waitFor()
  assert(await page.getByRole('button',{name:'登录，继续学习'}).isEnabled());check('injected network outage is visible and submit recovers')
- result.status='passed (authentication and initialized-profile/entry checks; pre-diagnosis 502 remains known)'
+ result.status='passed (real authentication, diagnosis and learning-entry checks; pre-diagnosis status is not asserted by this UI test)'
 } catch(e){result.status='failed';result.failure=String(e);throw e}
 finally{await writeFile(`${out}/real-results.json`,JSON.stringify(result,null,2));await browser.close()}
