@@ -4,7 +4,7 @@
 > Implementation: Not applicable
 > Baseline: v0.4 文档治理
 > Owner: TBD
-> Updated: 2026-11-13
+> Updated: 2026-11-14
 > Source: 本地仓库与实际原稿
 
 ## 当前、目标与历史
@@ -13,7 +13,7 @@
 | 分类 | 入口 | Status / Implementation | Baseline |
 | --- | --- | --- | --- |
 | 当前 | [架构、代码与测试证据](architecture/current/v0.4.md) | Draft / Partial；运行待复验 | v0.4 |
-| 当前 | [v0.4 API](engineering/api-v0.4.md) | Draft / Partial；源码已实现，运行 Unverified | v0.4 |
+| 当前 | [v0.4 API](engineering/api-v0.4.md) | Draft / Partial；正常学习闭环与画像状态已验证，其余边界见报告 | v0.4 |
 | 当前 | [运行说明](../README.md) | 既往验收说明，本轮未复验 | v0.4 |
 | 产品 | [Explore](product/explore/overview.md) | Draft / Not started | proposal v0.1 |
 | 产品 | [Living Picks](product/explore/living-picks.md) | Draft / Not started | proposal v0.1 |
@@ -23,7 +23,7 @@
 | 历史 | [认证设计](versions/v0.2/auth-security-design.md)、[认证实现](versions/v0.2/auth-security-implementation.md) | 历史索引分类 / Not applicable | v0.2 |
 | 治理 | [迁移与验收报告](governance-report.md) | Draft / Not applicable | 2026-11-13 |
 
-本轮新文档 Owner 为 TBD、Updated 为 2026-11-13，历史原始版本保持不变。
+治理首轮文档 Owner 为 TBD、Updated 为 2026-11-13；后续更新以各文档元数据为准，历史原始版本保持不变。
 
 ## 待导入与规划
 - v1.0 目标架构、服务清单、API/DB 及分阶段验收原稿未找到，不制造假正文。
@@ -35,3 +35,7 @@
 [故事地图](assets/user-story-map.png) · [流程原型](assets/wireframe-flow.png) · [主界面原型](assets/wireframe-main.png)。仅供追溯，不作为新 UI 基准；来源与授权待核对。
 
 完整[外部资料待导入清单](external-imports.md)记录缺失原稿、目标路径与导入条件。
+
+## 缺陷调查与业务验收
+
+[新用户画像502调查与真实学习闭环](engineering/profile-502-investigation.md) · [只读数据库核对SQL](engineering/profile-readonly-check.sql)。独立修复分支已通过 48 项后端测试、8 项浏览器契约检查及重启后的真实业务闭环；Workbench 对照计数与验证边界见报告。

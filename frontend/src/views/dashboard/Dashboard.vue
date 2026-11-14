@@ -3,7 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { useAuthStore } from '../../stores/auth'
-import { getMyProfile } from '../../api/profile'
+import { getMyProfile, ProfileNotInitializedError } from '../../api/profile'
 import { getNextTraining } from '../../api/plan'
 
 import type {
@@ -23,6 +23,7 @@ const profile = ref<UserProfileResponse | null>(null)
 const recommendation = ref<NextTrainingResponse | null>(null)
 
 const profileError = ref('')
+const profileNotInitialized = ref(false)
 const recommendationError = ref('')
 
 const topicNames: Record<RiskTopic, string> = {
@@ -72,6 +73,7 @@ const weakestTopic = computed(() => {
 async function loadLearningData() {
   dataLoading.value = true
   profileError.value = ''
+  profileNotInitialized.value = false
   recommendationError.value = ''
 
   profile.value = null
@@ -80,6 +82,7 @@ async function loadLearningData() {
   try {
     profile.value = await getMyProfile()
   } catch (error) {
+    profileNotInitialized.value = error instanceof ProfileNotInitializedError
     profileError.value = getErrorMessage(error)
     dataLoading.value = false
     return
@@ -178,16 +181,12 @@ async function handleLogout() {
           shadow="never"
           class="section-card"
       >
-        <el-empty description="暂无可展示的学习画像">
-          <p class="hint">
-            尚未完成初始诊断，或学习数据暂时无法读取。
-          </p>
-
+        <el-empty :description="profileNotInitialized ? '尚无学习画像' : '学习画像加载失败'">
           <p v-if="profileError" class="hint">
             {{ profileError }}
           </p>
 
-          <el-button type="primary" @click="goDiagnosis">
+          <el-button v-if="profileNotInitialized" type="primary" @click="goDiagnosis">
             前往学习诊断
           </el-button>
 
