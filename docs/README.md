@@ -15,7 +15,7 @@
 | 当前 | [架构、代码与测试证据](architecture/current/v0.4.md) | Draft / Partial；运行待复验 | v0.4 |
 | 当前 | [v0.4 API](engineering/api-v0.4.md) | Draft / Partial；正常学习闭环与画像状态已验证，其余边界见报告 | v0.4 |
 | 当前 | [运行说明](../README.md) | 既往验收说明，本轮未复验 | v0.4 |
-| 产品 | [Explore](product/explore/overview.md) | Draft / Not started | proposal v0.1 |
+| 产品 | [Explore 构想](product/explore/overview.md) · [城市来源](product/explore/city-sources.md) | Draft / Partial；城市列表已实现，地图待接入 | Explore 0.1 |
 | 产品 | [Living Picks](product/explore/living-picks.md) | Draft / Not started | proposal v0.1 |
 | 历史 | [架构](architecture.md)、[API](api.md) | Archived / Not applicable | v0.3 |
 | 历史 | [MVP](product/mvp.md) | Archived / Not applicable | v0.1 |
@@ -37,7 +37,11 @@
 
 [UI 0.1.1 视觉精修验收](design/ui-0.1.1-validation.md)：桌面首屏、响应式与授权摄影；待用户视觉评审。
 
-## 历史图表
+## Explore 0.1 中国城市居住探索
+
+[实施与验收](design/explore-0.1-validation.md) · [地图技术验证](engineering/explore-map-evaluation.md) · [实施计划与取舍](engineering/explore-0.1-plan.md) · [内容来源](product/explore/city-sources.md)。本轮交付公开城市列表和详情，采用地图授权/接入条件未就绪时的降级方案；世界地图、Living Picks 与房源搜索未实现。
+
+## 历史图表与参考
 [故事地图](assets/user-story-map.png) · [流程原型](assets/wireframe-flow.png) · [主界面原型](assets/wireframe-main.png)。仅供追溯，不作为新 UI 基准；来源与授权待核对。
 
 完整[外部资料待导入清单](external-imports.md)记录缺失原稿、目标路径与导入条件。

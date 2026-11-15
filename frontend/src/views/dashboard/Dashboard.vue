@@ -140,6 +140,7 @@ async function handleLogout() {
         <span>RentWise</span>
       </div>
 
+      <router-link to="/explore">城市探索</router-link>
       <el-button type="danger" plain @click="handleLogout">
         退出登录
       </el-button>

@@ -60,7 +60,7 @@ async function handleLogin() {
 <template>
  <div class="rw-auth landing">
   <a class="skip" href="#login-form">跳至登录表单</a>
-  <header class="rw-container nav"><a class="wordmark" href="#">RentWise<span>居住有知，选择有底。</span></a><nav aria-label="主导航"><a href="#living-notes">居住知识</a><a href="#risk-learning">风险学习</a><a class="nav-login" href="#login-form">登录</a><RouterLink to="/register">创建账户 <span aria-hidden="true">↗</span></RouterLink></nav></header>
+  <header class="rw-container nav"><a class="wordmark" href="#">RentWise<span>居住有知，选择有底。</span></a><nav aria-label="主导航"><RouterLink to="/explore" class="explore-link">城市探索</RouterLink><a href="#risk-learning">风险学习</a><a class="nav-login" href="#login-form">登录</a><RouterLink to="/register">创建账户 <span aria-hidden="true">↗</span></RouterLink></nav></header>
   <main class="rw-container">
    <div class="intro"><div><p class="rw-kicker">RENTWISE / 居住与选择</p><h1>读懂租约，<span>也读懂生活。</span></h1></div><p>从探索居住空间，到练习识别租约风险。<br />RentWise 帮你把喜欢的生活，变成更有把握的选择。</p></div>
    <div class="landing-panel">
@@ -131,7 +131,7 @@ nav a { text-decoration:none; } nav a:hover { text-decoration:underline; }
  .landing-panel { grid-template-columns:1fr; }.login-side { padding:32px 40px; }.editorial { gap:40px; padding:56px 8px; }
 }
 @media(max-width:767px) {
- .nav { min-height:68px; gap:12px; }nav { gap:16px; font-size:12px; }nav a:nth-child(1),nav a:nth-child(2) { display:none; }
+ .nav { min-height:68px; gap:12px; }nav { gap:16px; font-size:12px; }nav a:nth-child(2) { display:none; }
  .wordmark { font-size:22px; }.wordmark span { display:none; }.intro { padding:24px 0; gap:12px; }.intro h1 { font-size:30px; }.intro h1 span { display:block; }.intro .rw-kicker { font-size:9px; margin-bottom:10px; }.intro > p { font-size:12px; }.intro > p br { display:none; }
  .login-side { padding:28px 24px; }.login-side h2 { font-size:28px; }.login-intro { margin-bottom:20px; }
  .editorial { grid-template-columns:1fr; gap:28px; padding:48px 8px; }.learning { padding:36px 20px; }.learning-path { gap:12px; }.page-footer { flex-wrap:wrap; padding-top:28px; }.page-footer p { width:100%; order:3; }

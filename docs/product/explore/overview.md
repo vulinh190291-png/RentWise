@@ -1,11 +1,13 @@
 > Status: Draft
-> Implementation: Not started
+> Implementation: Partial（Explore 0.1 列表与详情；原稿其余范围仍为规划）
 > Baseline: Explore proposal v0.1
 > Owner: TBD
 > Updated: 2026-11-13
 > Source: RentWise_Explore_v0.1.md
 
 原稿主体原样保留；提及的独立 UI/UX 规范待提供。
+
+2026-11-14 实施说明：本轮八城市列表与详情、独立公开入口已落地；地图尚未接入，不代表下文完整规划已实现。[验收](../../design/explore-0.1-validation.md) · [资料来源](city-sources.md)。以下保留历史构想原文。
 
 # RentWise Explore｜产品构想与 UI/UX 初步规划
 
