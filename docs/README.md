@@ -39,6 +39,8 @@
 
 ## Explore 0.1 中国城市居住探索
 
+[Explore 0.2 接入准备与前置条件](design/explore-0.2-validation.md)：共享选择状态准备；真实地图尚未接入或验收。
+
 [实施与验收](design/explore-0.1-validation.md) · [地图技术验证](engineering/explore-map-evaluation.md) · [实施计划与取舍](engineering/explore-0.1-plan.md) · [内容来源](product/explore/city-sources.md)。本轮交付公开城市列表和详情，采用地图授权/接入条件未就绪时的降级方案；世界地图、Living Picks 与房源搜索未实现。
 
 ## 历史图表与参考

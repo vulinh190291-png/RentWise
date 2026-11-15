@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
-import { loadCities, matchesCity, type ExploreCity } from '../../data/explore'
+import { loadCities, type ExploreCity } from '../../data/explore'
+import MapAvailability from '../../components/housing/MapAvailability.vue'
+import { useCitySelection } from '../../data/useCitySelection'
 
 const cities = ref<ExploreCity[]>([])
-const query = ref('')
+const { query, filtered, selected, selectCity } = useCitySelection(cities)
 const loading = ref(true)
 const failed = ref(false)
-const selectedId = ref('')
 const detailOpen = ref(false)
 const mapNotice = ref(false)
 const imageFailed = ref(false)
@@ -16,8 +17,6 @@ const title = ref<HTMLElement>()
 const mapButton = ref<HTMLButtonElement>()
 let opener: HTMLButtonElement | undefined
 let request: AbortController | undefined
-const filtered = computed(() => cities.value.filter(city => matchesCity(city, query.value)))
-const selected = computed(() => filtered.value.find(city => city.id === selectedId.value) ?? filtered.value[0])
 watch(query, () => { detailOpen.value = false })
 async function load() {
   request?.abort()
@@ -30,7 +29,7 @@ async function load() {
 }
 async function select(city: ExploreCity, event: MouseEvent) {
   opener = event.currentTarget as HTMLButtonElement
-  selectedId.value = city.id; detailOpen.value = true
+  selectCity(city.id); detailOpen.value = true
   await nextTick(); title.value?.focus()
 }
 async function back() {
@@ -51,7 +50,7 @@ onBeforeUnmount(() => request?.abort())
   <main class="rw-container">
    <section class="intro" aria-labelledby="explore-title"><div><p class="rw-kicker">EXPLORE / 中国城市居住笔记</p><h1 id="explore-title"><span>从一座城，</span><span>读懂一种生活。</span></h1><p>从院落、街巷到日常空间，探索不同的居住方式。<br class="desktop-break" />先认识一座城，再把观察带进自己的租住选择。</p></div><figure v-if="!imageFailed"><img src="/images/housing-courtyard.webp" width="1400" height="933" alt="庭院空间摄影参考，不对应本页城市" @error="imageFailed=true" /><figcaption>空间观察参考 · 非城市实景<br /><a href="https://unsplash.com/photos/uj3VsJLhWE4" target="_blank" rel="noopener noreferrer">Erwan Hesry / Unsplash（新窗口）</a></figcaption></figure></section>
    <div class="section-heading"><div><p class="rw-kicker">01 / CITY NOTEBOOK</p><h2>城市不同，日常各有答案。</h2></div><button ref="mapButton" class="text-button" :aria-expanded="mapNotice" aria-controls="map-notice" @click="mapNotice=!mapNotice">地图接入说明</button></div>
-   <section v-if="mapNotice" id="map-notice" class="notice" aria-labelledby="map-title"><h3 id="map-title">地图尚未开放</h3><p>本版先提供城市列表与居住笔记。待地图服务授权与接入配置确认后，再开放地图浏览；当前不展示地理轮廓或城市坐标。</p><button class="rw-button" @click="closeMap">返回城市浏览</button></section>
+   <MapAvailability v-if="mapNotice" status="unconfigured" @close="closeMap" />
    <div class="workspace" :class="{ 'detail-open': detailOpen }" :aria-busy="loading">
     <section class="city-browser" aria-label="城市浏览">
      <label for="city-search">搜索城市、拼音或住宅特点</label><div class="search-row"><input id="city-search" ref="search" v-model="query" type="search" placeholder="试试：上海、Suzhou、院落" autocomplete="off" /><button v-if="query" class="clear" @click="clearSearch">清空搜索</button></div>
