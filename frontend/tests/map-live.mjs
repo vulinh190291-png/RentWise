@@ -63,4 +63,3 @@ try {
  if(out)await writeFile(`${out}/map-live-result.json`,JSON.stringify(results,null,2))
  console.log(JSON.stringify(results))
 }finally{await browser.close()}
-
