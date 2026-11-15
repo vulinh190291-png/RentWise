@@ -53,3 +53,7 @@
 - [国家行政法规库：地图管理条例](https://xzfg.moj.gov.cn/front/law/detail?LawID=421)
 
 [文档导航](../README.md) · [实施计划](explore-0.1-plan.md)
+
+## 2026-11-15 接入决策更新
+
+以上“未加载 SDK／不搭建代理”为早期阶段记录。用户已提供项目专用环境变量并授权独立 Node 本地代理，本轮选用高德 JS API 2.0 + 官方 serviceHost 代理方式。复用已有城市资料与状态接口，不引入地图库依赖或行政区 GeoJSON。代理与 Java、Gateway 完全隔离，保留目录降级；真实运行、网络失败及生产前置条件见[Explore 0.2 验收](../design/explore-0.2-validation.md)，启动方法与坐标来源见[代理说明](amap-local-proxy.md)。这次本地技术接入不替代用途许可、域名白名单、公开地图发布要求或世界地图覆盖核验。

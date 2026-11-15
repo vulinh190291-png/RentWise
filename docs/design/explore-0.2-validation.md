@@ -1,14 +1,46 @@
-# Explore 0.2 接入准备（真实地图未验收）
+# Explore 0.2 地图接入与本地验收
 
-> Version: 0.1
+> Version: 0.2
 > Status: Draft
-> Implementation: Partial（共享状态准备；未加载地图 SDK）
+> Implementation: Partial（真实 SDK 本地运行；公网部署未验收）
 > Project: v0.4 / Explore 0.2
 > Baseline: 8292957
 > Updated: 2026-11-15
 > Source: 当前源码、官方平台文档、本轮用户约束
 
-本轮停在正式地图接入前置条件：项目平台授权、Web Key、域名及安全部署尚未确认。没有真实地图截图、瓦片、坐标或 SDK 实测结果。保留 Explore 0.1 全部数据、来源和页面，不生成假地图。
+## 2026-11-15 真实接入更新
+
+用户随后确认项目专用高德环境变量已配置，并授权独立本地代理。基线 e7c90e3 保留；新增代码位于 feat/explore-map-v0.2，未改 Java、数据库、认证或微服务配置。以下是当前结果，后文“未加载 SDK”仅描述先前准备阶段。
+
+### 已实现
+
+- 隔离的 Node 本地代理与 PowerShell 启动器；只监听 127.0.0.1:5175。Codex 初始进程未继承变量，用户环境存在，启动器仅注入子进程。Web Key 的首尾空白在内存去除，未覆盖保存的环境变量。
+- 点击后按需加载真实高德 JS API 2.0。浏览器获得公开 Web Key 与同源 serviceHost，安全密钥仅添加到代理上游请求；无 VITE 密钥、请求日志或业务服务修改。
+- 八城市行政区中心由 AMap.DistrictSearch 返回并核对 adcode，GCJ-02，无来源不明 GeoJSON。全国视角、缩放和平移、原生按钮节点、选中状态、地图/列表/搜索共用选择状态、详情和键盘联动。
+- SDK 10 秒、配置 8 秒、代理上游 10 秒、地图会话 60 秒超时；失败提示与手动重试，返回目录销毁实例和监听。取消时结束待处理的适配器等待，不将迟到回调更新到已卸载页面。
+- 默认不加载第三方 SDK；保留平台版权、审图信息，禁用滚轮缩放，减少运动设置传入相机定位。桌面当前为地图在上、目录与详情在下；手机地图在上，可切回目录并进入独立详情。尚未采用桌面地图与详情同排布局。
+
+### 验证范围与证据
+
+真实服务与模拟故障严格分开。真实测试使用本机 Edge、Vite 5174、Node 代理 5175；截图不是示意图。`map-live.mjs` 对真实 SDK、八节点、选择联动、键盘、全国视角、卸载进行断言；桌面/手机复用同一浏览器页面，重新挂载地图使用内存坐标缓存，不代表两次冷启动。另用拦截的 503 验证代理不可用、重试和目录降级。
+
+外层持久证据目录：`04_版本交付/Explore-0.2/验收/2026-11-15/`。`map-live-1440.png`、`map-live-390.png` 为真实底图；`map-detail-1440.png`、`map-detail-390.png` 为选择后的详情；`map-live-result.json` 为最近完整测试结果。截图仅本地验收留存，未加入 Git 图片库。初期目录截图不作为地图证据。
+
+最终运行：真实 map-live 回归通过，1440/390 均 SDK=true、markers=8、stage=ready、securityCodeInBrowser=false；该完整通过轮无需手动重试，另有故障拦截重试测试通过。TypeScript/生产构建、map-preparation、Explore 0.1、UI 0.1、UI 0.1.1 和 8 项画像契约回归通过。文档相对文件链接与 git diff --check 通过。对本轮修改、新文件与 dist 使用用户环境中的安全密钥进行内容比对，未发现泄露；只输出存在状态和扫描布尔结果。画像与认证为模拟 HTTP 回归，没有新增数据库写入。既有主包 949.50 kB 警告保留，地图组件独立分块约 5.5 kB，第三方 SDK 不进入首页主包。
+
+### 失败记录及未验证边界
+
+- 沙箱浏览器未能加载外部 SDK；允许访问外部网络后可加载。初期 serviceHost 相对 URL 错误已改为完整同源地址。
+- 坐标服务间歇性失败：观察到 SDK 已加载、坐标阶段失败，代理返回 502。不能据此认定 Key 无效或服务稳定；手动重试、60 秒总超时与目录替代保留。曾经桌面成功而手机冷启动失败，不隐藏这些失败记录。
+- 使用 Web JS Key 直接访问 REST 行政区接口曾返回 USERKEY_PLAT_NOMATCH；实际产品采用 JS SDK DistrictSearch，不把 REST 失败归为 JS Key 失效。
+- 手机全国缩放下东部标签密集，有重叠；可缩放及使用等效城市列表，尚无聚合标记或避让布局。Hover 为城市名称提示，不是富内容卡片。触摸操作仅通过手机视口验证，未使用实体手机。
+- 用户配置变量不等于完成生产许可、域名、额度及公开地图部署核验；这些仍由项目负责人确认。本地代理没有公网配额防滥用保证，生产构建不自带代理。世界地图、交易、Living Picks 不在范围。
+
+启动方法与坐标来源见[本地代理说明](../engineering/amap-local-proxy.md)。
+
+## 接入准备历史（e7c90e3，以下保留原阶段边界）
+
+当时停在正式地图接入前置条件：项目平台授权、Web Key、域名及安全部署尚未确认。没有真实地图截图、瓦片、坐标或 SDK 实测结果。保留 Explore 0.1 全部数据、来源和页面，不生成假地图。
 
 已准备 `useCitySelection`：列表、搜索与未来地图统一消费 selectedId/selected，统一调用 selectCity。搜索无结果清空选择，列表重新加载时校正选择，地图未来选择过滤外城市时清空筛选，拒绝未知城市 ID。当前仅目录使用该入口；不代表地图联动完成。
 
@@ -46,5 +78,22 @@ TypeScript 与生产构建通过（既有主包大于 500 kB 警告保留）；E
 - 组件拆分后 Explore 回归及 TypeScript/生产构建通过；前一轮同分支已通过首页两套及 8 项画像契约回归。未执行真实后端写入。
 
 共 8 个变更文件：本报告、docs/README.md、地图评估、Explore.vue、useCitySelection.ts、mapSession.ts、MapAvailability.vue、map-preparation.mjs。城市数据、认证、后端、依赖及服务配置不变。仅本地提交，不推送或创建 PR。真实 SDK、地图节点、地图/列表切换及坐标核验仍待外部条件具备后实施。
+
+## 当前轮完整变更清单
+
+- docs/README.md：更新验收与启动入口。
+- docs/design/explore-0.2-validation.md：本报告与历史阶段边界。
+- docs/engineering/explore-map-evaluation.md：实际方案选择更新。
+- docs/engineering/amap-local-proxy.md：启动、安全范围、坐标来源。
+- frontend/src/components/housing/CityMap.vue：真实地图画布、失败提示与重试。
+- frontend/src/data/amapAdapter.ts：SDK 生命周期、节点与共享状态适配。
+- frontend/src/views/explore/Explore.vue：按需入口、选择及详情联动。
+- frontend/tests/explore.mjs：接入说明文案断言。
+- frontend/tests/map-live.mjs：真实地图与拦截故障测试、截图。
+- frontend/tools/map-proxy.mjs：独立本地安全代理。
+- frontend/tools/start-map-proxy.ps1：环境变量注入启动器。
+- frontend/vite.config.ts：仅新增地图同源代理规则，保留业务 /api。
+
+不含地图 SDK 副本、密钥、后台代码、依赖更新或新增城市事实。原准备提交 e7c90e3 保留，不推送或创建 PR。
 
 [地图评估](../engineering/explore-map-evaluation.md) · [Explore 0.1 验收](explore-0.1-validation.md) · [导航](../README.md)

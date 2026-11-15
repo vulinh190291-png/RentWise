@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import { loadCities, type ExploreCity } from '../../data/explore'
-import MapAvailability from '../../components/housing/MapAvailability.vue'
 import { useCitySelection } from '../../data/useCitySelection'
 
+const CityMap = defineAsyncComponent(() => import('../../components/housing/CityMap.vue'))
+const showMap = ref(false)
 const cities = ref<ExploreCity[]>([])
-const { query, filtered, selected, selectCity } = useCitySelection(cities)
+const { query, selectedId, filtered, selected, selectCity } = useCitySelection(cities)
 const loading = ref(true)
 const failed = ref(false)
 const detailOpen = ref(false)
@@ -32,6 +33,12 @@ async function select(city: ExploreCity, event: MouseEvent) {
   selectCity(city.id); detailOpen.value = true
   await nextTick(); title.value?.focus()
 }
+async function selectFromMap(id: string) {
+  if (!selectCity(id)) return
+  await nextTick()
+  detailOpen.value = true
+  await nextTick(); title.value?.focus()
+}
 async function back() {
   detailOpen.value = false
   await nextTick()
@@ -50,7 +57,9 @@ onBeforeUnmount(() => request?.abort())
   <main class="rw-container">
    <section class="intro" aria-labelledby="explore-title"><div><p class="rw-kicker">EXPLORE / 中国城市居住笔记</p><h1 id="explore-title"><span>从一座城，</span><span>读懂一种生活。</span></h1><p>从院落、街巷到日常空间，探索不同的居住方式。<br class="desktop-break" />先认识一座城，再把观察带进自己的租住选择。</p></div><figure v-if="!imageFailed"><img src="/images/housing-courtyard.webp" width="1400" height="933" alt="庭院空间摄影参考，不对应本页城市" @error="imageFailed=true" /><figcaption>空间观察参考 · 非城市实景<br /><a href="https://unsplash.com/photos/uj3VsJLhWE4" target="_blank" rel="noopener noreferrer">Erwan Hesry / Unsplash（新窗口）</a></figcaption></figure></section>
    <div class="section-heading"><div><p class="rw-kicker">01 / CITY NOTEBOOK</p><h2>城市不同，日常各有答案。</h2></div><button ref="mapButton" class="text-button" :aria-expanded="mapNotice" aria-controls="map-notice" @click="mapNotice=!mapNotice">地图接入说明</button></div>
-   <MapAvailability v-if="mapNotice" status="unconfigured" @close="closeMap" />
+   <section v-if="mapNotice" id="map-notice" class="notice"><h3>地图按需连接</h3><p>点击打开交互地图后连接高德服务。连接失败时仍可使用城市目录；地图版权与审图信息保留在画布内。</p><button class="rw-button" @click="closeMap">返回城市浏览</button></section>
+   <button v-if="!showMap && cities.length" class="rw-button" @click="showMap=true">打开交互地图</button>
+   <CityMap v-if="showMap && cities.length" :cities="cities" :selected-id="selectedId" @select="selectFromMap" @fallback="showMap=false" />
    <div class="workspace" :class="{ 'detail-open': detailOpen }" :aria-busy="loading">
     <section class="city-browser" aria-label="城市浏览">
      <label for="city-search">搜索城市、拼音或住宅特点</label><div class="search-row"><input id="city-search" ref="search" v-model="query" type="search" placeholder="试试：上海、Suzhou、院落" autocomplete="off" /><button v-if="query" class="clear" @click="clearSearch">清空搜索</button></div>
