@@ -34,6 +34,7 @@ async function select(city: ExploreCity, event: MouseEvent) {
   await nextTick(); title.value?.focus()
 }
 async function selectFromMap(id: string) {
+  opener = document.querySelector<HTMLButtonElement>(`.amap-city-button[data-city-id="${id}"]`) ?? undefined
   if (!selectCity(id)) return
   await nextTick()
   detailOpen.value = true
@@ -59,8 +60,8 @@ onBeforeUnmount(() => request?.abort())
    <div class="section-heading"><div><p class="rw-kicker">01 / CITY NOTEBOOK</p><h2>城市不同，日常各有答案。</h2></div><button ref="mapButton" class="text-button" :aria-expanded="mapNotice" aria-controls="map-notice" @click="mapNotice=!mapNotice">地图接入说明</button></div>
    <section v-if="mapNotice" id="map-notice" class="notice"><h3>地图按需连接</h3><p>点击打开交互地图后连接高德服务。连接失败时仍可使用城市目录；地图版权与审图信息保留在画布内。</p><button class="rw-button" @click="closeMap">返回城市浏览</button></section>
    <button v-if="!showMap && cities.length" class="rw-button" @click="showMap=true">打开交互地图</button>
+   <div class="workspace" :class="{ 'detail-open': detailOpen, 'map-open': showMap }" :aria-busy="loading">
    <CityMap v-if="showMap && cities.length" :cities="cities" :selected-id="selectedId" @select="selectFromMap" @fallback="showMap=false" />
-   <div class="workspace" :class="{ 'detail-open': detailOpen }" :aria-busy="loading">
     <section class="city-browser" aria-label="城市浏览">
      <label for="city-search">搜索城市、拼音或住宅特点</label><div class="search-row"><input id="city-search" ref="search" v-model="query" type="search" placeholder="试试：上海、Suzhou、院落" autocomplete="off" /><button v-if="query" class="clear" @click="clearSearch">清空搜索</button></div>
      <p v-if="loading" role="status">正在加载城市资料…</p>
@@ -92,7 +93,26 @@ a { color:inherit; text-underline-offset:5px; }.skip { position:absolute; top:-1
 .section-heading { display:flex; justify-content:space-between; align-items:center; gap:20px; padding:16px 0 24px; }.section-heading h2 { margin:8px 0 0; font-size:22px; font-weight:500; }.rw-kicker { color:var(--rw-muted); }.text-button { border:0; background:none; text-decoration:underline; text-underline-offset:5px; min-height:44px; padding:10px 4px; cursor:pointer; color:inherit; font-size:13px; }.notice { border:1px solid var(--rw-line); padding:24px; border-radius:16px; margin-bottom:24px; }.notice p { line-height:1.8; max-width:680px; }
 .workspace { display:grid; grid-template-columns:minmax(280px,.85fr) minmax(0,1.6fr); border:1px solid var(--rw-line); border-radius:24px; background:#fff; overflow:hidden; }.city-browser { padding:28px; background:#f0efe9; }.city-browser label { font-size:13px; display:block; margin-bottom:12px; }.search-row { position:relative; }input { width:100%; min-height:48px; padding:12px; border:1px solid #aaa99f; border-radius:8px; background:white; color:var(--rw-ink); } .clear { display:block; border:0; background:none; text-decoration:underline; padding:10px 0; min-height:44px; cursor:pointer; }.count { font-size:11px; color:var(--rw-muted); line-height:1.7; margin:18px 0; }.city-list { list-style:none; margin:0; padding:0; }.city-choice { width:100%; display:flex; align-items:center; gap:16px; text-align:left; padding:17px 12px; background:none; border:0; border-top:1px solid #d9d7cf; color:inherit; cursor:pointer; border-radius:4px; }.city-choice:hover { background:#e6e4db; }.city-choice[aria-pressed=true] { background:#252523; color:white; border-color:transparent; }.city-choice > span:nth-child(2) { flex:1; }.city-choice strong { font-size:19px; font-weight:500; }.city-choice small { display:block; font-size:11px; line-height:1.6; margin-top:6px; }.number { font-size:11px; opacity:.8; }
 .city-detail { padding:28px 40px 36px; min-width:0; }.back { margin-bottom:8px; }.detail-heading { border-bottom:1px solid var(--rw-line); padding:4px 0 20px; }.detail-heading h2 { font-size:48px; letter-spacing:-.04em; font-weight:500; margin:12px 0; scroll-margin-top:24px; }.detail-heading > p:last-child { font-size:14px; color:var(--rw-muted); }.facts { display:grid; grid-template-columns:1fr 1fr; gap:28px; padding:24px 0; }h3 { font-size:16px; font-weight:600; margin:0 0 12px; }.city-detail p { font-size:14px; line-height:1.85; }.city-detail small { display:block; font-size:11px; color:var(--rw-muted); line-height:1.7; }.housing { border-top:1px solid var(--rw-line); padding:20px 0; }.housing h3 { font-size:24px; font-weight:500; }.risk { background:#f3f1eb; border-radius:14px; padding:24px; }.risk a { display:inline-block; margin-top:18px; font-size:13px; padding:10px 0; }.sources { border-top:1px solid var(--rw-line); margin-top:24px; padding-top:12px; font-size:12px; }.sources summary { padding-block:12px; cursor:pointer; line-height:1.7; }.sources p { font-size:12px; }.sources li { margin:14px 0; overflow-wrap:anywhere; }.sources ul { padding-left:18px; }.state { padding:24px 0; }.state p { font-size:14px; line-height:1.8; }
+.workspace.map-open { grid-template-columns:minmax(0,1.65fr) minmax(0,1fr); align-items:start; }
+.map-open :deep(.city-map) { grid-column:1; grid-row:1; min-width:0; margin:0; padding:16px; }
+.map-open .city-browser { grid-column:1; grid-row:2; padding:20px; }
+.map-open .city-list { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; }
+.map-open .city-choice { padding:12px 8px; min-height:48px; gap:4px; }
+.map-open .city-choice strong { font-size:15px; }.map-open .city-choice small,.map-open .city-choice .number,.map-open .city-choice > span:last-child { display:none; }
+.map-open .city-detail { grid-column:2; grid-row:1 / span 2; padding:24px; }
+.map-open .facts { grid-template-columns:1fr; gap:16px; }
 footer { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px; padding-top:32px; font-size:11px; color:var(--rw-muted); }footer strong { font-size:16px; color:var(--rw-ink); }
 @media(max-width:1100px) { .intro { gap:24px; }.city-browser { padding:20px; }.city-detail { padding:24px; }.facts { gap:18px; }.section-heading h2 { font-size:20px; } }
 @media(max-width:767px) { .topbar { min-height:68px; }.brand span { display:none; }nav { gap:16px; font-size:12px; }.intro { display:block; padding:24px 0; }.intro h1 { font-size:28px; }.intro h1 span { display:block; }.intro figure { height:150px; margin-top:20px; }.desktop-break { display:none; }.section-heading { align-items:flex-start; flex-direction:column; gap:4px; padding-top:0; }.workspace { display:block; border-radius:16px; }.city-detail { display:none; padding:20px; }.detail-open .city-browser { display:none; }.detail-open .city-detail { display:block; }.facts { grid-template-columns:1fr; gap:20px; }.detail-heading h2 { font-size:40px; }.risk { padding:20px; }footer { gap:8px; }footer p { width:100%; margin:0; }.city-choice { padding:18px 10px; } }
+</style>
+
+<style scoped>
+@media(max-width:767px) {
+ .workspace.map-open { display:block; }
+ .map-open :deep(.city-map) { padding:8px; }
+ .map-open .city-browser { padding:16px; }
+ .map-open .city-list { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .map-open.detail-open :deep(.city-map) { display:none; }
+ .map-open .city-detail { padding:20px; }
+}
 </style>

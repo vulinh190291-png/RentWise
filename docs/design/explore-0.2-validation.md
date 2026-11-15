@@ -1,12 +1,39 @@
 # Explore 0.2 地图接入与本地验收
 
-> Version: 0.2
+> Version: 0.2.1
 > Status: Draft
 > Implementation: Partial（真实 SDK 本地运行；公网部署未验收）
 > Project: v0.4 / Explore 0.2
 > Baseline: 8292957
 > Updated: 2026-11-15
 > Source: 当前源码、官方平台文档、本轮用户约束
+
+## Explore 0.2.1 地图布局与交互精修（2026-11-15）
+
+基于 5d31797，保留 e7c90e3、7e98838、5d31797 的历史。范围仅前端、独立本地地图代理、测试与对应文档。以下为当前实现；后文 0.2 地图上下布局和在线坐标查询是历史状态。
+
+- **视野**：官方 setFitView 对八城市真实位置计算范围，留出控件、标签与版权边距，最大初始 zoom=6。“全国视角”返回八城中国区域探索视野，不表示全国行政区全景。城市定位限制在 6–7 级，不跳到街道级。
+- **标记**：LabelMarker + LabelsLayer collision/allowCollision；低于 5.5 级只展示部分代表名称与选中名称，放大后全部名称参与原生避让。所有八个位置点一直存在，紧凑城市目录提供全部入口。选中点使用深色与外环、选中标签 rank=10000，目录同步 aria-pressed。没有偏移经纬度来排布文字。
+- **布局**：桌面 1.65:1，约 62.3% 地图和紧凑目录、37.7% 完整详情。无固定高度裁切详情。手机显示地图和两列目录；选择后进入独立详情，返回或 Escape 恢复来源节点/目录按钮焦点。地图关闭滚轮缩放，手机保留纵向页面滚动入口。
+- **坐标**：八城市均由真实 DistrictSearch 按 adcode 核验，静态 JSON 记录 GCJ-02、来源、日期与中心点含义。页面不再请求地理编码。具体值可审阅源码 JSON；核验工具仅全部成功后写入，不接触安全密钥。
+- **可靠性与安全**：保留配置/SDK/整体加载超时、手动重试、取消、销毁与目录降级；会话超时从 60 秒减至 25 秒。精确上游路径白名单、固定目标域名与不泄露异常信息的错误分类见[本地代理说明](../engineering/amap-local-proxy.md)。旧 502 具体传输根因仍无法从已丢弃的历史异常恢复，不能笼统归因于 Key 或平台故障。
+
+真实截图与测试记录保存于外层 `04_版本交付/Explore-0.2.1/验收/2026-11-15/`，与 0.2 历史证据分开。地图 SDK 实测与替身代理故障测试分别记录。生产许可、公开域名、生产代理部署和安全审查仍未验收；本机成功不是生产可用声明。
+
+### 0.2.1 验收结果与剩余边界
+
+- 真实 Edge + 高德 SDK：1440、1024、390、320 四种视口均八节点 ready；点击、搜索/目录、键盘、返回焦点、逐一选择八城市、全国视角八点在画布内、卸载通过。桌面同排且比例在 60%–65% 之间。各视口无横向溢出。实际服务路径仅观察到 /_AMapService/v3/log/init，行政区查询次数为 0。
+- 真实截图：map-live-{1440,1024,390,320}.png、map-detail-{1440,1024,390,320}.png；map-live-result.json 保存完整测试结果。此轮目录和前述路径均在外层交付目录，未将截图加入源码仓库。截图中的真实底图经过渲染等待与目视核查；节点就绪不直接等于瓦片已绘制。
+- 故障验证：拦截配置返回 503 后，错误、手动重试和目录阅读通过；代理测试使用替身上游验证安全拒绝与错误分类，不伪称真实平台故障测试。
+- TypeScript 与生产构建通过；map-preparation、Explore 0.1、UI 0.1、UI 0.1.1 及 8 项画像契约回归通过。后端契约为模拟 HTTP，没有执行真实用户写入。既有 949.50 kB 主包警告保留，地图独立块约 6.45 kB。
+- 安全密钥对本轮文件与 dist 的内容扫描未发现匹配；未读取其他项目 Key。文档相对文件链接与 Git 空白检查通过。原三个提交保留，仅本地提交。
+- 原生避让会抑制一部分重叠文字，不承诺全国缩放下八个名称同时展示；八点与完整目录始终可选，放大和选择后显示相应名称。没有真机手势测试，仅桌面浏览器手机视口。
+- **320px 版权显示待确认**：桌面实拍保留完整版权/审图文字；320px 的地图宽度约 270px 时，高德 Logo 可见，但 SDK 原生 .amap-copyright 节点为空（等待 12 秒后仍无子节点）。本项目没有隐藏/删除该节点，也未硬编码猜测审图号。该平台窄容器行为仍需确认处理，不能声明所有视口的版权展示验收完整通过，正式公开部署前必须解决。
+- 真实运行仍观察到初始化上游偶发 502。静态坐标移除了八次在线行政区依赖，不消除 SDK/瓦片的网络依赖，也不证明旧错误根因。商业许可、域名、生产代理安全审查仍未完成。
+
+本轮文件共 11 项：docs/README.md、docs/design/explore-0.2-validation.md、docs/engineering/amap-local-proxy.md；frontend/src/components/housing/CityMap.vue、frontend/src/data/amapAdapter.ts、frontend/src/data/cityCoordinates.json、frontend/src/views/explore/Explore.vue；frontend/tests/map-live.mjs、frontend/tests/map-proxy.mjs；frontend/tools/map-proxy.mjs、frontend/tools/verify-map-coordinates.mjs。
+
+方案依据：[高德原生标注避让](https://lbs.amap.com/api/javascript-api-v2/guide/amap-massmarker/label-marker)、[官方 setFitView / LabelsLayer / LabelMarker API](https://a.amap.com/jsapi/static/doc/index.html)，核验 2026-11-15。选择原生避让以保持真实位置；不采用坐标偏移；静态八点替代每次在线行政区查询，降低固定内容的网络依赖。
 
 ## 2026-11-15 真实接入更新
 
