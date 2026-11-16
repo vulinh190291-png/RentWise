@@ -39,7 +39,7 @@
 
 ## Explore 0.1 中国城市居住探索
 
-[Explore 0.2 地图接入与验收](design/explore-0.2-validation.md)：真实高德 SDK 本地接入；0.2.1 同排布局、原生标签避让与静态坐标核验，公网部署仍未验收。
+[Explore 0.2 地图接入与验收](design/explore-0.2-validation.md)：真实高德 SDK 本地接入；0.2.1 同排布局、原生标签避让与静态坐标核验，320/390px 原生版权显示仍阻塞完整验收，详见最终检查；公网部署仍未验收。
 
 [高德本地代理启动与接入](engineering/amap-local-proxy.md)：仅本机开发；真实 SDK 联调结果以 Explore 0.2 验收追加记录为准。
 
@@ -53,3 +53,5 @@
 ## 缺陷调查与业务验收
 
 [新用户画像502调查与真实学习闭环](engineering/profile-502-investigation.md) · [只读数据库核对SQL](engineering/profile-readonly-check.sql)。独立修复分支已通过 48 项后端测试、8 项浏览器契约检查及重启后的真实业务闭环；Workbench 对照计数与验证边界见报告。
+
+[Explore 0.2 Draft PR 文案与发布边界](engineering/explore-draft-pr.md)（仅准备，尚未创建 PR）。

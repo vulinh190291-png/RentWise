@@ -42,6 +42,7 @@ try {
   const overviewZoom=Number(await page.locator('.canvas').getAttribute('data-zoom'));assert.ok(overviewZoom>=3 && overviewZoom<=6)
 
   if(markers===8){await page.getByRole('button',{name:'地图城市：哈尔滨',exact:true}).click();await page.getByRole('heading',{name:'哈尔滨',exact:true}).waitFor()}
+  if(width<768)assert.ok(await page.locator('.canvas').evaluate(el=>el.clientWidth>0 && el.clientHeight>0),'hidden detail must preserve SDK viewport dimensions')
   await page.getByRole('button',{name:'返回城市列表'}).click()
   assert.equal(await page.evaluate(()=>document.activeElement?.getAttribute('data-city-id')),'harbin')
   await page.getByRole('searchbox').fill('Suzhou')
@@ -50,6 +51,7 @@ try {
   if(width<768)await page.getByRole('button',{name:'返回城市列表'}).click()
   await page.getByRole('button',{name:'全国视角',exact:true}).click()
   console.log(JSON.stringify({width,overviewZoom,returnedZoom:Number(await page.locator('.canvas').getAttribute('data-zoom'))}))
+  await page.waitForFunction(zoom=>Math.abs(Number(document.querySelector('.canvas')?.dataset.zoom)-zoom)<0.01,overviewZoom)
   await page.waitForFunction(()=>{
    const canvas=document.querySelector('.canvas').getBoundingClientRect()
    return [...document.querySelectorAll('.amap-city-button')].every(node=>{const r=node.getBoundingClientRect();return r.left>=canvas.left && r.right<=canvas.right && r.top>=canvas.top && r.bottom<=canvas.bottom})

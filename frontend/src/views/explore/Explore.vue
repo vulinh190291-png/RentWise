@@ -108,11 +108,12 @@ footer { display:flex; flex-wrap:wrap; align-items:center; justify-content:space
 
 <style scoped>
 @media(max-width:767px) {
- .workspace.map-open { display:block; }
+ .workspace.map-open { display:block; position:relative; }
  .map-open :deep(.city-map) { padding:8px; }
  .map-open .city-browser { padding:16px; }
  .map-open .city-list { grid-template-columns:repeat(2,minmax(0,1fr)); }
- .map-open.detail-open :deep(.city-map) { display:none; }
+ /* Preserve the SDK viewport while the independent mobile detail is shown. */
+ .map-open.detail-open :deep(.city-map) { position:absolute; top:0; left:0; width:100%; visibility:hidden; pointer-events:none; }
  .map-open .city-detail { padding:20px; }
 }
 </style>
