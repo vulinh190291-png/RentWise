@@ -65,6 +65,7 @@ onBeforeUnmount(() => request?.abort())
     <article v-if="!loading && !failed && selected" id="city-detail" class="city-detail" aria-labelledby="city-title">
      <button class="text-button back" @click="back">返回城市列表</button>
      <div class="detail-heading"><p class="rw-kicker">{{ selected.pinyin }} / 居住文化样本</p><h2 id="city-title" ref="title" tabindex="-1">{{ selected.name }}</h2><p>{{ selected.tag }}</p></div>
+     <RouterLink v-if="['beijing','shanghai','suzhou'].includes(selected.id)" :to="`/explore/stories/${selected.id}`" class="text-button">阅读 {{selected.name}} 的住宅故事 ↗</RouterLink>
      <div class="facts"><section><h3>地理与气候</h3><p>{{ selected.geography }}</p><p>{{ selected.climate }}</p><small>定性背景，不是实时天气或具体房屋环境评估。</small></section><section><h3>居住文化</h3><p>{{ selected.culture }}</p></section></div>
      <section class="housing"><p class="rw-kicker">空间样本 / HISTORICAL CONTEXT</p><h3>{{ selected.housingTitle }}</h3><p>{{ selected.housing }}</p></section>
      <section class="risk"><h3>把观察，带进租住选择。</h3><p>{{ selected.risk }}</p><small>RentWise 编辑提出的核对问题，非当地风险统计或法律意见。</small><RouterLink to="/dashboard">开始风险学习 <span aria-hidden="true">↗</span></RouterLink></section>

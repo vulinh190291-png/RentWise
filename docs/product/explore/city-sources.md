@@ -40,3 +40,17 @@
 `id` 是稳定的城市标识，搜索匹配城市中文名、无声调拼音、主题与住宅标题。添加城市需补全地理、气候、文化、住宅、编辑风险问题、来源和核验日期，并更新验收用例数量。当前 version 为 0.1；加载器校验字段、HTTPS 来源与 ID 唯一性，错误时可重试，不用虚构数据填补。需要未核实的字段时先完善来源，不能用此表给未知内容背书。
 
 [原始 Explore 构想](overview.md) · [导航](../../README.md)
+
+## Explore 0.3 三城市故事（2026-11-16）
+
+状态 Draft；故事已实现，内容仍待编辑与视觉评审。独立数据见 [cityStories.ts](../../../frontend/src/data/cityStories.ts)，原八城市 JSON 未修改。故事不采用新的城市数值气候统计；建筑与气候的未证实因果关系不作事实断言，现场观察建议明确标为编辑建议。
+
+- 北京：围合布局据[北京市政府四合院介绍](https://www.beijing.gov.cn/tsbj/sxym/202007/t20200713_1946380.html)；胡同、院落与保护语境据[北京市住建委修缮资料](https://zjw.beijing.gov.cn/bjjs/xxgk/zcjd2024/sx83/436477602/index.shtml)。未引用其最古老等泛化措辞，也不补填宅院年代。
+- 上海：中轴线与江南民居联系据[市政府黄浦区介绍](https://www.shanghai.gov.cn/huangpu/index.html)；传统技艺身份据[国家非遗名录](https://www.ihchina.cn/project_details/14731)。不把所有里弄视作同一种住宅。
+- 苏州：私人园林、住宅范围内的自然缩影、水石植物与文化表达据[UNESCO](https://whc.unesco.org/en/list/813/)。园林不是全城普通住宅样本，未据园林水景推断住宅排水或城市气候性能。
+
+### 0.3 摄影授权记录
+
+北京：[Courtyard in Beijing.jpg](https://commons.wikimedia.org/wiki/File:Courtyard_in_Beijing.jpg)，作者 Dudva，作者自摄，页面标注摄影日期 2025-03-18，[CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)，2026-11-16 核验。原图 2906×3875，2,561,949 字节，未做图像修改，CSS contain 展示，不裁切。SHA256：09BD5524B7F33B0A5CBE98694C920A8F425C9908DE13E8C96FFD3545CEB311B3。仓库文件：[beijing-courtyard.jpg](../../../frontend/public/images/stories/beijing-courtyard.jpg)。画面为门内通道/院落空间，未确认特定宅院历史身份，不对应正文中的具体保护案例。作者、作品及许可在页面显示。
+
+上海、苏州：尚未完成逐图授权核验，未下载或展示政府、博物馆及 UNESCO 照片。保留明确占位，不将北京或页头的通用摄影冒充本城实景。后续补图必须录入作者、作品原页、许可、核验日及必要范围说明。

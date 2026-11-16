@@ -49,3 +49,5 @@
 ## 缺陷调查与业务验收
 
 [新用户画像502调查与真实学习闭环](engineering/profile-502-investigation.md) · [只读数据库核对SQL](engineering/profile-readonly-check.sql)。独立修复分支已通过 48 项后端测试、8 项浏览器契约检查及重启后的真实业务闭环；Workbench 对照计数与验证边界见报告。
+
+[Explore 0.3 城市故事验收](design/explore-0.3-validation.md)：三城市独立阅读体验，北京 CC0 摄影，上海/苏州摄影待补；无地图依赖。
