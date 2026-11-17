@@ -55,3 +55,4 @@
 [新用户画像502调查与真实学习闭环](engineering/profile-502-investigation.md) · [只读数据库核对SQL](engineering/profile-readonly-check.sql)。独立修复分支已通过 48 项后端测试、8 项浏览器契约检查及重启后的真实业务闭环；Workbench 对照计数与验证边界见报告。
 
 [Explore 0.2 Draft PR 文案与发布边界](engineering/explore-draft-pr.md)（仅准备，尚未创建 PR）。
+[Explore 0.3 城市故事验收](design/explore-0.3-validation.md)：三城市独立阅读体验，三城授权摄影与文化内容，原比例排版及阅读导航；无地图依赖。
