@@ -2,6 +2,7 @@
 import { defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import { loadCities, type ExploreCity } from '../../data/explore'
+import { exploreNavigation } from '../../data/exploreNavigation'
 import { useCitySelection } from '../../data/useCitySelection'
 
 const CityMap = defineAsyncComponent(() => import('../../components/housing/CityMap.vue'))
@@ -24,7 +25,12 @@ async function load() {
   const active = new AbortController(); request = active
   loading.value = true; failed.value = false; detailOpen.value = false
   const timeout = window.setTimeout(() => { if (request === active) { failed.value = true; loading.value = false; active.abort() } }, 12000)
-  try { cities.value = await loadCities(active.signal) }
+  try {
+    cities.value = await loadCities(active.signal)
+    query.value = exploreNavigation.query
+    if (exploreNavigation.city) selectCity(exploreNavigation.city)
+    showMap.value = exploreNavigation.map
+  }
   catch { if (!active.signal.aborted) failed.value = true }
   finally { window.clearTimeout(timeout); if (!active.signal.aborted) loading.value = false }
 }
@@ -48,7 +54,12 @@ async function back() {
 async function closeMap() { mapNotice.value = false; await nextTick(); mapButton.value?.focus() }
 async function clearSearch() { query.value = ''; await nextTick(); search.value?.focus() }
 onMounted(load)
-onBeforeUnmount(() => request?.abort())
+onBeforeUnmount(() => {
+  request?.abort()
+  exploreNavigation.map = showMap.value
+  exploreNavigation.city = selectedId.value
+  exploreNavigation.query = query.value
+})
 </script>
 
 <template>

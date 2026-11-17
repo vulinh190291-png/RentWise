@@ -56,3 +56,5 @@
 
 [Explore 0.2 Draft PR 文案与发布边界](engineering/explore-draft-pr.md)（仅准备，尚未创建 PR）。
 [Explore 0.3 城市故事验收](design/explore-0.3-validation.md)：三城市独立阅读体验，三城授权摄影与文化内容，原比例排版及阅读导航；无地图依赖。
+
+[Explore 地图与城市故事集成验收](design/explore-integrated-validation.md)：独立集成分支，地图与三城阅读链路；窄屏版权问题暂停排查，仍为发布前待确认事项。
