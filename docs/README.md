@@ -33,7 +33,7 @@
 
 ## Homepage v0.1 现行首页设计
 
-[唯一现行首页规格](design/homepage-v0.1.md) · [轻量决策 ADR-001](design/homepage-adr-001.md)。Editorial Lifestyle × Interactive Exploration；方向与五区结构已确认，[首轮公共首页桌面与手机视觉方向已通过](design/homepage-v0.1-validation.md)，人工点击与真实数据库联调仍需独立验证。Explore本地集成中、Learn已实现、Living/Compare规划中。下方UI 0.1资料保留历史依据，不作为并行的新首页规格。
+[唯一现行首页规格](design/homepage-v0.1.md) · [轻量决策 ADR-001](design/homepage-adr-001.md)。Editorial Lifestyle × Interactive Exploration；方向与五区结构已确认，[首轮公共首页桌面与手机视觉方向已通过](design/homepage-v0.1-validation.md)，公共导航与真实学习闭环自动化、只读数据库对照已通过；人工点击仍待独立验证。Explore本地集成中、Learn已实现、Living/Compare规划中。下方UI 0.1资料保留历史依据，不作为并行的新首页规格。
 
 ## UI 0.1 历史前端实施
 
