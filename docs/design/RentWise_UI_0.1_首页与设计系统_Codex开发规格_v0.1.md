@@ -1,5 +1,7 @@
 # RentWise UI 0.1｜首页与统一设计系统开发规格（Codex 执行版）
 
+> 2026-11-22 文档定位：本文保留为 UI 0.1 历史实施规格；后续首页改版统一遵循[Homepage v0.1 现行规格](homepage-v0.1.md)。下文状态为编制时记录，实际历史实现见[验收](ui-0.1-validation.md)。
+
 > 文档版本：v0.1（首轮实施规格）\
 > 文档状态：Approved for UI 0.1 implementation（仅限本文明确的前端范围）\
 > 对应项目：RentWise v0.4 微服务开发基线\
