@@ -13,6 +13,18 @@ try {
   assert.equal(await page.locator('main > section').count(),4);assert.equal(await page.locator('footer').count(),1)
   for(const img of await page.locator('main img').all()){await img.scrollIntoViewIfNeeded();await img.evaluate(e=>e.decode())}
   await page.evaluate(()=>scrollTo(0,0));assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false)
+  if(width<768){
+   const photos=await page.locator('.city figure img').evaluateAll(imgs=>imgs.map(img=>({width:img.clientWidth,height:img.clientHeight,fit:getComputedStyle(img).objectFit})))
+   assert.equal(photos.length,3)
+   for(const photo of photos){assert.ok(Math.abs(photo.width/photo.height-4/3)<.02);assert.equal(photo.fit,'contain')}
+   for(const link of await page.locator('.masthead nav a,.account a,.footer nav a,figcaption a,.primary').all()){
+    const box=await link.boundingBox();assert.ok(box && box.height>=44,'mobile touch target height')
+   }
+   for(const caption of await page.locator('figcaption').all()){
+    assert.ok(await caption.evaluate(el=>parseFloat(getComputedStyle(el).fontSize)>=12))
+    assert.equal(await caption.locator('a').count(),2)
+   }
+  }
   assert.equal(await page.locator('a[href="/living"],a[href="/compare"]').count(),0)
   assert.ok(!requests.some(u=>/amap|CityMap|amapAdapter|CityStoryPage/.test(u)))
   if(out){await mkdir(out,{recursive:true});await page.screenshot({path:`${out}/home-${width}-full.png`,fullPage:true});await page.screenshot({path:`${out}/home-${width}-hero.png`})}
