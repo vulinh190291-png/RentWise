@@ -25,11 +25,11 @@ try {
     assert.equal(await caption.locator('a').count(),2)
    }
   }
-  assert.equal(await page.locator('a[href="/living"],a[href="/compare"]').count(),0)
+  assert.equal(await page.locator('a[href="/compare"]').count(),0)
   assert.ok(!requests.some(u=>/amap|CityMap|amapAdapter|CityStoryPage/.test(u)))
   if(out){await mkdir(out,{recursive:true});await page.screenshot({path:`${out}/home-${width}-full.png`,fullPage:true});await page.screenshot({path:`${out}/home-${width}-hero.png`})}
  }
- await page.getByRole('navigation',{name:'首页导航'}).getByRole('link',{name:'Living',exact:true}).click();assert.equal(new URL(page.url()).hash,'#living')
+ await page.getByRole('navigation',{name:'首页导航'}).getByRole('link',{name:'Living',exact:true}).click();await page.waitForURL('**/living');await page.goBack()
  await page.getByRole('navigation',{name:'首页导航'}).getByRole('link',{name:'Compare',exact:true}).click();assert.equal(new URL(page.url()).hash,'#tools')
  for(const [id,title] of [['beijing','从一扇门，读懂一座院'],['shanghai','门里门外，里弄里的城市生活'],['suzhou','在庭院里，容纳一片山水']]) {
   await page.goto(base+'/');await page.locator(`a[href="/explore/stories/${id}"]`).click();await page.getByRole('heading',{name:title,exact:true}).waitFor();await page.goBack();await page.getByRole('heading',{level:1}).waitFor()
