@@ -2,7 +2,7 @@
 
 > Version: 0.1
 > Status: Approved（仅下列已确认决策）
-> Implementation: Not started
+> Implementation: Partial（首轮公共首页实现，规划功能不含在内）
 > Project: RentWise v0.4 / Homepage v0.1
 > Baseline: 9e55cda / feat/explore-integrated-v0.4
 > Owner: TBD
@@ -30,3 +30,7 @@
 新首页以内容为首屏重点，登录保留独立可达入口；复用已有Explore故事与Learn业务。Living/Compare未具备功能时不发布空路由或伪按钮。不能因四业务布局已确认就宣称四模块全部上线。旧首页规格保留为历史依据，新工作统一引用[唯一现行首页规格](homepage-v0.1.md)。首页设计批准不解除地图版权及公网部署待办，也不授权修改认证行为。
 
 本轮只写文档，未执行路由迁移、UI实现、提交或远程操作。后续变更已确认方向时追加决策记录，不静默覆盖历史。
+
+## 2026-11-22 实施决策追加
+
+用户明确授权 `/` 为无需登录的公共首页，独立Home组件实施；保留/login与Dashboard保护。此追加取代上文公共路由待确认状态，不改变字体/摄影等细节仍待首轮评审的边界。实施与测试见[验收报告](homepage-v0.1-validation.md)。
