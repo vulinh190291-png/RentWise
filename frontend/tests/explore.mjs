@@ -48,7 +48,7 @@ try {
  await page.keyboard.press('Escape')
  assert.equal(await page.locator('.city-choice').first().evaluate(el => el === document.activeElement), true)
  await page.getByRole('button', { name: '地图接入说明' }).click()
- await page.getByText('地图尚未开放', { exact: true }).waitFor()
+ await page.getByText('地图按需连接', { exact: true }).waitFor()
  await page.getByRole('button', { name: '返回城市浏览' }).click()
  for (const [width,height] of [[1440,900],[1024,768],[390,844],[320,740]]) {
   await page.setViewportSize({width,height}); await page.goto(base+'/explore')

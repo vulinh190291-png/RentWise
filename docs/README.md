@@ -4,7 +4,7 @@
 > Implementation: Not applicable
 > Baseline: v0.4 文档治理
 > Owner: TBD
-> Updated: 2026-11-14
+> Updated: 2026-11-22
 > Source: 本地仓库与实际原稿
 
 ## 当前、目标与历史
@@ -15,7 +15,7 @@
 | 当前 | [架构、代码与测试证据](architecture/current/v0.4.md) | Draft / Partial；运行待复验 | v0.4 |
 | 当前 | [v0.4 API](engineering/api-v0.4.md) | Draft / Partial；正常学习闭环与画像状态已验证，其余边界见报告 | v0.4 |
 | 当前 | [运行说明](../README.md) | 既往验收说明，本轮未复验 | v0.4 |
-| 产品 | [Explore 构想](product/explore/overview.md) · [城市来源](product/explore/city-sources.md) | Draft / Partial；城市列表已实现，地图待接入 | Explore 0.1 |
+| 产品 | [Explore 构想](product/explore/overview.md) · [城市来源](product/explore/city-sources.md) | Draft / Partial；目录已实现，地图与故事本地集成待评审，发布边界见集成验收 | Explore 0.1–0.3 |
 | 产品 | [Living Picks](product/explore/living-picks.md) | Draft / Not started | proposal v0.1 |
 | 历史 | [架构](architecture.md)、[API](api.md) | Archived / Not applicable | v0.3 |
 | 历史 | [MVP](product/mvp.md) | Archived / Not applicable | v0.1 |
@@ -31,13 +31,21 @@
 - F07 情境模拟、F08 决策复盘、F09 学习路径是规划，不是已实现声明。
 - 课程 Word、交付 ZIP 和外部图片保留原位，见报告；不创建空目录或占位 PRD。
 
-## UI 0.1 前端实施
+## Homepage v0.1 现行首页设计
+
+[唯一现行首页规格](design/homepage-v0.1.md) · [轻量决策 ADR-001](design/homepage-adr-001.md)。Editorial Lifestyle × Interactive Exploration；方向与五区结构已确认，新首页尚未实施，精确视觉与摄影待定。Explore本地集成中、Learn已实现、Living/Compare规划中。下方UI 0.1资料保留历史依据，不作为并行的新首页规格。
+
+## UI 0.1 历史前端实施
 
 [批准的首轮规格](design/RentWise_UI_0.1_首页与设计系统_Codex开发规格_v0.1.md) · [实施与验收](design/ui-0.1-validation.md) · [素材来源](design/assets-attribution.md)。首页与设计系统、真实认证链路及诊断初始化已验收；UI 0.1.1 已导入核验来源的摄影，完整 UI/UX v1.0 原稿仍缺失。画像状态修复与学习闭环补充验收由独立 Fix PR 交付。
 
 [UI 0.1.1 视觉精修验收](design/ui-0.1.1-validation.md)：桌面首屏、响应式与授权摄影；待用户视觉评审。
 
 ## Explore 0.1 中国城市居住探索
+
+[Explore 0.2 地图接入与验收](design/explore-0.2-validation.md)：真实高德 SDK 本地接入；0.2.1 同排布局、原生标签避让与静态坐标核验，320/390px 原生版权显示仍阻塞完整验收，详见最终检查；公网部署仍未验收。
+
+[高德本地代理启动与接入](engineering/amap-local-proxy.md)：仅本机开发；真实 SDK 联调结果以 Explore 0.2 验收追加记录为准。
 
 [实施与验收](design/explore-0.1-validation.md) · [地图技术验证](engineering/explore-map-evaluation.md) · [实施计划与取舍](engineering/explore-0.1-plan.md) · [内容来源](product/explore/city-sources.md)。本轮交付公开城市列表和详情，采用地图授权/接入条件未就绪时的降级方案；世界地图、Living Picks 与房源搜索未实现。
 
@@ -49,3 +57,8 @@
 ## 缺陷调查与业务验收
 
 [新用户画像502调查与真实学习闭环](engineering/profile-502-investigation.md) · [只读数据库核对SQL](engineering/profile-readonly-check.sql)。独立修复分支已通过 48 项后端测试、8 项浏览器契约检查及重启后的真实业务闭环；Workbench 对照计数与验证边界见报告。
+
+[Explore 0.2 Draft PR 文案与发布边界](engineering/explore-draft-pr.md)（仅准备，尚未创建 PR）。
+[Explore 0.3 城市故事验收](design/explore-0.3-validation.md)：三城市独立阅读体验，三城授权摄影与文化内容，原比例排版及阅读导航；无地图依赖。
+
+[Explore 地图与城市故事集成验收](design/explore-integrated-validation.md)：独立集成分支，地图与三城阅读链路；窄屏版权问题暂停排查，仍为发布前待确认事项。

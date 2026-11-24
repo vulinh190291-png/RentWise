@@ -1,0 +1,74 @@
+{
+  "version": "0.2.1",
+  "coordinateSystem": "GCJ-02",
+  "meaning": "AMap administrative district center; not a dwelling location",
+  "source": "AMap JS API 2.0 DistrictSearch; subdistrict=0; extensions=base",
+  "sourceUrl": "https://lbs.amap.com/api/javascript-api-v2/guide/services/district-search",
+  "checkedAt": "2026-11-15",
+  "cities": [
+    {
+      "id": "beijing",
+      "adcode": "110000",
+      "position": [
+        116.407387,
+        39.904179
+      ]
+    },
+    {
+      "id": "shanghai",
+      "adcode": "310000",
+      "position": [
+        121.473667,
+        31.230525
+      ]
+    },
+    {
+      "id": "guangzhou",
+      "adcode": "440100",
+      "position": [
+        113.264499,
+        23.130061
+      ]
+    },
+    {
+      "id": "suzhou",
+      "adcode": "320500",
+      "position": [
+        120.585294,
+        31.299758
+      ]
+    },
+    {
+      "id": "xiamen",
+      "adcode": "350200",
+      "position": [
+        118.08891,
+        24.479627
+      ]
+    },
+    {
+      "id": "lijiang",
+      "adcode": "530700",
+      "position": [
+        100.225936,
+        26.855165
+      ]
+    },
+    {
+      "id": "huangshan",
+      "adcode": "341000",
+      "position": [
+        118.337643,
+        29.714886
+      ]
+    },
+    {
+      "id": "harbin",
+      "adcode": "230100",
+      "position": [
+        126.53505,
+        45.802981
+      ]
+    }
+  ]
+}
