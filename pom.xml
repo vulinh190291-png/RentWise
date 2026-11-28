@@ -23,6 +23,7 @@
         <module>learning-service</module>
         <module>profile-service</module>
         <module>gateway-service</module>
+        <module>content-service</module>
     </modules>
 
     <properties>

@@ -212,3 +212,7 @@ npm run build
 - GitHub 仓库：<https://github.com/vulinh190291-png/RentWise>
 
 修改本 README 后，应创建新的文档提交。课程正式交付时，请提供包含最终 README 的分支链接和实际最新 Commit，而不只提供默认 `main` 分支。
+
+## Compare内容服务（开发中）
+
+独立MySQL库、8084服务及Gateway接入步骤见[Compare启动/API与验收](docs/design/compare-v0.1.md)。原学习服务启动不变。
