@@ -66,3 +66,7 @@
 ## Living 居住灵感
 
 [唯一Living v0.1规格与验收](design/living-v0.1.md)：公共分类目录与三篇编辑专题已实现，待视觉和内容评审；不是Living Picks商品推荐。
+
+## Compare 城市生活图鉴
+
+[唯一Compare规格、API与启动验收](design/compare-v0.1.md)：独立内容服务与六维前端已实现；真实服务注册和Gateway8085联调已通过，数值资料与生产验收待补。

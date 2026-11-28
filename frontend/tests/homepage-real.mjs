@@ -42,7 +42,7 @@ try {
   await page.goto(base+'/')
   await page.getByRole('heading',{level:1}).waitFor()
   assert.equal(new URL(page.url()).pathname,'/')
-  assert.equal(await page.locator('a[href="/compare"]').count(),0)
+  assert.ok(await page.locator('a[href="/compare"]').count()>0)
   assert.ok(!initialRequests.some(u=>/amap|CityMap|amapAdapter|CityStoryPage/.test(u)))
   await page.getByRole('link',{name:'开始风险学习',exact:false}).first().click()
   await page.waitForURL('**/login')

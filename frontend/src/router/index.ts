@@ -10,6 +10,7 @@ const Assessment = () => import('../views/assessment/Assessment.vue')
 const router = createRouter({
     history: createWebHistory(),
     routes: [
+        {path:'/compare',name:'compare',component:()=>import('../views/compare/Compare.vue')},
         {path:'/living',name:'living',component:()=>import('../views/living/Living.vue')},
         {path:'/living/:slug',name:'living-article',component:()=>import('../views/living/LivingArticle.vue')},
         {path: "/explore/stories/:cityId", name: "city-story", component: () => import("../views/explore/CityStoryPage.vue")},

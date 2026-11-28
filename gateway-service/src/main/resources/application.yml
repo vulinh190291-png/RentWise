@@ -12,6 +12,11 @@ spring:
       server:
         webflux:
           routes:
+            - id: content-api
+              uri: lb://content-service
+              order: -10
+              predicates:
+                - Path=/api/content/**
             - id: training-api
               uri: lb://training-service
               predicates:

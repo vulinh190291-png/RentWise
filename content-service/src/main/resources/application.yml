@@ -1,0 +1,18 @@
+server:
+  port: ${CONTENT_PORT:8084}
+spring:
+  application:
+    name: content-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+        ip: 127.0.0.1
+        enabled: ${NACOS_ENABLED:false}
+  datasource:
+    url: ${CONTENT_DB_URL:jdbc:mysql://127.0.0.1:3306/rentwise_content_v04?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai}
+    username: ${CONTENT_DB_USERNAME:root}
+    password: ${CONTENT_DB_PASSWORD}
+  sql:
+    init:
+      mode: never
